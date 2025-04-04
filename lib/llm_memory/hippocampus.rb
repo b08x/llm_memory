@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 require_relative 'store'
 require_relative 'stores/redis_store'
+require_relative 'stores/pgvector_store'
 
 require_relative 'embedding'
 require_relative 'embeddings/openai'
+require_relative 'embeddings/gemini'
 
 module LlmMemory
   # The Hippocampus class is responsible for managing the memory of the LLM.
@@ -16,7 +20,7 @@ module LlmMemory
     # @param index_name [String] The name of the index in the store. Defaults to 'llm_memory'.
     # @raise [RuntimeError] if the embedding or store is not found.
     def initialize(
-      embedding_name: :openai,
+      embedding_name: :gemini,
       chunk_size: 1024,
       chunk_overlap: 50,
       store: :redis,
