@@ -151,7 +151,7 @@ module LlmMemory
       all_chunks = []
 
       docs.each do |item|
-        content = item[:content].to_s.strip # Ensure string and remove leading/trailing whitespace
+        content = item[:content].to_s.encode('UTF-8', invalid: :replace, undef: :replace).strip # Ensure string and remove leading/trailing whitespace
         metadata = item[:metadata]
 
         # Use Lingua for sentence splitting
@@ -171,7 +171,7 @@ module LlmMemory
         current_chunk_len = 0
         sentence_index_for_overlap = 0 # Track where the overlap for the *next* chunk should start
 
-        sentences.each_with_index do |sentence, i|
+        sentences.each_with_index do |sentence, _i|
           sentence_len = sentence.length
           # Calculate length if sentence is added (plus 1 for space, unless it's the first sentence)
           potential_len = current_chunk_len + (current_chunk_sentences.empty? ? 0 : 1) + sentence_len
@@ -183,7 +183,7 @@ module LlmMemory
 
             # --- Overlap Calculation ---
             # Find the sentence index to start the overlap from, aiming for @chunk_overlap characters
-            overlap_char_target = chunk_text.length - @chunk_overlap
+            chunk_text.length
             current_overlap_len = 0
             start_index_found = false
 
