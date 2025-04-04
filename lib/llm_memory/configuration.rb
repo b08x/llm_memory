@@ -36,7 +36,7 @@ module LlmMemory
     # @!attribute redis_url
     #   @return [String] The Redis URL.
     #   @deprecated Use {Configuration::Base#redis_url} instead.
-    attr_accessor :openai_access_token, :openai_organization_id
+    attr_accessor :openai_access_token, :openai_organization_id, :gemini_api_key
 
     attr_writer :pg_url
 
@@ -54,6 +54,7 @@ module LlmMemory
       # For backward compatibility
       @openai_api_key = @openai.access_token
       @openai_organization_id = @openai.organization_id
+      @gemini_api_key = @gemini.api_key
 
       @redis_url = @base.redis_url
       @pg_url = @base.pg_url
