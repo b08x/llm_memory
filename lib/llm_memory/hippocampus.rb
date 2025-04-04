@@ -16,7 +16,7 @@ module LlmMemory
     # @param index_name [String] The name of the index in the store. Defaults to 'llm_memory'.
     # @raise [RuntimeError] if the embedding or store is not found.
     def initialize(
-      embedding_name: :openai,
+      embedding_name: :gemini,
       chunk_size: 1024,
       chunk_overlap: 50,
       store: :redis,
