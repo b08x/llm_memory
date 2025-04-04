@@ -6,7 +6,7 @@ module LlmMemory
     module Openai
       def client
         @client ||= OpenAI::Client.new(
-          access_token: LlmMemory.configuration.openai_api_key
+          access_token: ENV.fetch('OPENAI_ACCESS_TOKEN')
         )
       end
     end

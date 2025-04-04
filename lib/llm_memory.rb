@@ -4,6 +4,16 @@ lib_dir = File.expand_path(File.join(__dir__, '..', 'lib'))
 $LOAD_PATH.unshift lib_dir unless $LOAD_PATH.include?(lib_dir)
 
 require 'logger'
+require 'dotenv/load'
+
+# Attempts to load the .env file, overwriting existing environment variables.
+# If an error occurs, it displays an error message.
+begin
+  Dotenv.load('.env', overwrite: true)
+rescue StandardError => e
+  puts "Error loading .env file: #{e.message}"
+end
+
 # config
 require 'llm_memory/configuration'
 require 'llm_memory/hippocampus'

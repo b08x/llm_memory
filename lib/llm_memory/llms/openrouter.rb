@@ -8,8 +8,8 @@ module LlmMemory
     module OpenRouter
       def client
         @client ||= OpenAI::Client.new(
-          access_token: LlmMemory.configuration.openrouter_api_key,
-          base_url: LlmMemory.configuration.openrouter_host
+          access_token: ENV.fetch('OPENAI_ACCESS_TOKEN'),
+          uri_base: 'https://openrouter.ai/api/v1'
         )
       end
     end

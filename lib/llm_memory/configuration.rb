@@ -50,7 +50,7 @@ module LlmMemory
       # @groq = Configuration::Groq.new
 
       # For backward compatibility
-      @openai_api_key = @openai.api_key
+      @openai_api_key = @openai.access_token
       @openai_organization_id = @openai.organization_id
       # @redis_url = @base.redis_url
     end

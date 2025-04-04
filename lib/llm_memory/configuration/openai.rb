@@ -9,11 +9,11 @@ module LlmMemory
     #
     # @example
     #   openai_config = LlmMemory::Configuration::OpenAI.new
-    #   openai_config.api_key = "your_openai_api_key"
+    #   openai_config.access_token = "your_openai_api_key"
     #   openai_config.organization_id = "your_openai_organization_id"
     class OpenAI
       # @return [String] The OpenAI API key.
-      attr_accessor :api_key
+      attr_accessor :access_token
       # @return [String] The OpenAI organization ID.
       attr_accessor :organization_id
 
@@ -22,7 +22,7 @@ module LlmMemory
       # Sets the default API key from the environment variable 'OPENAI_API_KEY'.
       # The organization ID is initially set to nil.
       def initialize
-        @api_key = ENV['OPENAI_API_KEY']
+        @access_token = ENV['OPENAI_API_KEY']
         @organization_id = nil
       end
     end
