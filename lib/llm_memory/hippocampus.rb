@@ -3,6 +3,7 @@ require_relative 'stores/redis_store'
 
 require_relative 'embedding'
 require_relative 'embeddings/openai'
+require_relative 'embeddings/gemini'
 
 module LlmMemory
   # The Hippocampus class is responsible for managing the memory of the LLM.
