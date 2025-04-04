@@ -1,5 +1,7 @@
-require_relative "../embedding"
-require_relative "../llms/openai"
+# frozen_string_literal: true
+
+require_relative '../embedding'
+require_relative '../llms/openai'
 
 module LlmMemory
   module Embeddings
@@ -9,7 +11,7 @@ module LlmMemory
 
       register_embedding :openai
 
-      def embed_documents(texts, model: "text-embedding-ada-002")
+      def embed_documents(texts, model: 'text-embedding-ada-002')
         embedding_list = []
         texts.each do |txt|
           res = client.embeddings(
@@ -18,19 +20,19 @@ module LlmMemory
               input: txt
             }
           )
-          embedding_list.push(res["data"][0]["embedding"])
+          embedding_list.push(res['data'][0]['embedding'])
         end
         embedding_list
       end
 
-      def embed_document(text, model: "text-embedding-ada-002")
+      def embed_document(text, model: 'text-embedding-ada-002')
         res = client.embeddings(
           parameters: {
             model: model,
             input: text
           }
         )
-        res["data"][0]["embedding"]
+        res['data'][0]['embedding']
       end
     end
   end

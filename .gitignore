@@ -10,3 +10,11 @@
 # rspec failure tracking
 .rspec_status
 .env
+
+.ruby-gemset
+.ruby-version
+/.vscode/
+/.qodo/
+/vendor/
+llm_memory.code-workspace
+/log/

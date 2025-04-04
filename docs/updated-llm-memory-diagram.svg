@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Background Grid -->
+  <rect width="800" height="600" fill="#121212"/>
+  <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
+    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#1a1a1a" stroke-width="0.5"/>
+  </pattern>
+  <rect width="800" height="600" fill="url(#smallGrid)"/>
+  
+  <!-- Main Title -->
+  <text x="400" y="40" font-family="monospace" font-size="28" text-anchor="middle" fill="#00FF00" font-weight="bold">CONTEXTUAL LLM MEMORY</text>
+  
+  <!-- Input Layer -->
+  <text x="120" y="90" font-family="monospace" font-size="18" text-anchor="middle" fill="#00FFFF" font-weight="bold">INPUT SOURCES</text>
+  
+  <!-- Files Source -->
+  <rect x="50" y="120" width="120" height="80" fill="none" stroke="#00FFFF" stroke-width="2"/>
+  <text x="110" y="160" font-family="monospace" font-size="16" text-anchor="middle" fill="#00FFFF">FILES</text>
+  <line x1="70" y1="140" x2="150" y2="140" stroke="#00FFFF" stroke-width="1"/>
+  
+  <!-- Gmail Source -->
+  <rect x="50" y="210" width="120" height="80" fill="none" stroke="#00FFFF" stroke-width="2"/>
+  <text x="110" y="250" font-family="monospace" font-size="16" text-anchor="middle" fill="#00FFFF">EMAIL</text>
+  <path d="M 70 230 L 110 240 L 150 230" fill="none" stroke="#00FFFF" stroke-width="1"/>
+  
+  <!-- Chat History -->
+  <rect x="50" y="300" width="120" height="80" fill="none" stroke="#00FFFF" stroke-width="2"/>
+  <text x="110" y="340" font-family="monospace" font-size="16" text-anchor="middle" fill="#00FFFF">CHAT HISTORY</text>
+  <line x1="70" y1="320" x2="150" y2="320" stroke="#00FFFF" stroke-width="1"/>
+  <line x1="70" y1="330" x2="150" y2="330" stroke="#00FFFF" stroke-width="1"/>
+  <line x1="70" y1="340" x2="150" y2="340" stroke="#00FFFF" stroke-width="1"/>
+  <line x1="70" y1="350" x2="150" y2="350" stroke="#00FFFF" stroke-width="1"/>
+  <line x1="70" y1="360" x2="150" y2="360" stroke="#00FFFF" stroke-width="1"/>
+  
+  <!-- User Interface -->
+  <circle cx="110" cy="450" r="40" fill="none" stroke="#00FFFF" stroke-width="2"/>
+  <text x="110" y="455" font-family="monospace" font-size="14" text-anchor="middle" fill="#00FFFF">USER</text>
+  
+  <!-- Processing Core -->
+  <rect x="230" y="100" width="370" height="400" fill="none" stroke="#FF00FF" stroke-width="3"/>
+  <text x="415" y="130" font-family="monospace" font-size="24" text-anchor="middle" fill="#FF00FF" font-weight="bold">NEURAL CORE</text>
+  
+  <!-- Input Processing -->
+  <rect x="250" y="150" width="140" height="100" fill="none" stroke="#00FF00" stroke-width="2"/>
+  <text x="320" y="170" font-family="monospace" font-size="16" text-anchor="middle" fill="#00FF00">WERNICKE</text>
+  <text x="320" y="190" font-family="monospace" font-size="12" text-anchor="middle" fill="#00FF00">INPUT PROCESSING</text>
+  <text x="320" y="210" font-family="monospace" font-size="12" text-anchor="middle" fill="#00FF00">OpenAI/Mistral</text>
+  <text x="320" y="230" font-family="monospace" font-size="12" text-anchor="middle" fill="#00FF00">Gemini/Others</text>
+  
+  <!-- Short-Term Memory -->
+  <rect x="250" y="270" width="140" height="100" fill="none" stroke="#FF8800" stroke-width="2"/>
+  <text x="320" y="290" font-family="monospace" font-size="16" text-anchor="middle" fill="#FF8800">SHORT-TERM</text>
+  <text x="320" y="310" font-family="monospace" font-size="16" text-anchor="middle" fill="#FF8800">MEMORY</text>
+  <text x="320" y="330" font-family="monospace" font-size="12" text-anchor="middle" fill="#FF8800">WORKING CONTEXT</text>
+  <text x="320" y="350" font-family="monospace" font-size="12" text-anchor="middle" fill="#FF8800">ACTIVE DIALOGUE</text>
+  
+  <!-- Output Generation -->
+  <rect x="250" y="390" width="140" height="90" fill="none" stroke="#00FFFF" stroke-width="2"/>
+  <text x="320" y="410" font-family="monospace" font-size="16" text-anchor="middle" fill="#00FFFF">BROCA</text>
+  <text x="320" y="430" font-family="monospace" font-size="12" text-anchor="middle" fill="#00FFFF">RESPONSE GEN</text>
+  <text x="320" y="450" font-family="monospace" font-size="10" text-anchor="middle" fill="#00FFFF">CONTEXT FUSION</text>
+  
+  <!-- Memory Processing -->
+  <rect x="440" y="150" width="140" height="100" fill="none" stroke="#9370DB" stroke-width="2"/>
+  <text x="510" y="170" font-family="monospace" font-size="16" text-anchor="middle" fill="#9370DB">HIPPOCAMPUS</text>
+  <text x="510" y="190" font-family="monospace" font-size="12" text-anchor="middle" fill="#9370DB">MEMORY INDEXING</text>
+  <text x="510" y="210" font-family="monospace" font-size="12" text-anchor="middle" fill="#9370DB">SEMANTIC CHUNKING</text>
+  <text x="510" y="230" font-family="monospace" font-size="12" text-anchor="middle" fill="#9370DB">RELEVANCE SCORING</text>
+  
+  <!-- Long-Term Memory -->
+  <rect x="440" y="270" width="140" height="210" fill="none" stroke="#FF00FF" stroke-width="2"/>
+  <text x="510" y="290" font-family="monospace" font-size="16" text-anchor="middle" fill="#FF00FF">LONG-TERM</text>
+  <text x="510" y="310" font-family="monospace" font-size="16" text-anchor="middle" fill="#FF00FF">MEMORY</text>
+  
+  <!-- Redis Storage -->
+  <rect x="455" y="330" width="110" height="60" fill="none" stroke="#FF00FF" stroke-width="1"/>
+  <text x="510" y="345" font-family="monospace" font-size="10" text-anchor="middle" fill="#FF00FF">REDIS/REDISEARCH</text>
+  <text x="510" y="360" font-family="monospace" font-size="10" text-anchor="middle" fill="#FF00FF">VECTOR STORE</text>
+  <text x="510" y="375" font-family="monospace" font-size="10" text-anchor="middle" fill="#FF00FF">FAST RETRIEVAL</text>
+  
+  <!-- Postgres Storage -->
+  <rect x="455" y="400" width="110" height="60" fill="none" stroke="#FF00FF" stroke-width="1"/>
+  <text x="510" y="415" font-family="monospace" font-size="10" text-anchor="middle" fill="#FF00FF">POSTGRES/PGVECTOR</text>
+  <text x="510" y="430" font-family="monospace" font-size="10" text-anchor="middle" fill="#FF00FF">PERSISTENT STORAGE</text>
+  <text x="510" y="445" font-family="monospace" font-size="10" text-anchor="middle" fill="#FF00FF">RELATIONAL CONTEXT</text>
+  
+  <!-- External Knowledge -->
+  <rect x="650" y="150" width="120" height="260" fill="none" stroke="#00FF00" stroke-width="2"/>
+  <text x="710" y="170" font-family="monospace" font-size="16" text-anchor="middle" fill="#00FF00">EXTERNAL</text>
+  <text x="710" y="190" font-family="monospace" font-size="16" text-anchor="middle" fill="#00FF00">KNOWLEDGE</text>
+  
+  <!-- Knowledge Base -->
+  <rect x="665" y="210" width="90" height="60" fill="none" stroke="#00FF00" stroke-width="1"/>
+  <text x="710" y="235" font-family="monospace" font-size="10" text-anchor="middle" fill="#00FF00">DOMAIN</text>
+  <text x="710" y="250" font-family="monospace" font-size="10" text-anchor="middle" fill="#00FF00">KNOWLEDGE</text>
+  
+  <!-- Semantic Search -->
+  <rect x="665" y="280" width="90" height="60" fill="none" stroke="#00FF00" stroke-width="1"/>
+  <text x="710" y="305" font-family="monospace" font-size="10" text-anchor="middle" fill="#00FF00">SEMANTIC</text>
+  <text x="710" y="320" font-family="monospace" font-size="10" text-anchor="middle" fill="#00FF00">SEARCH</text>
+  
+  <!-- API Connectors -->
+  <rect x="665" y="350" width="90" height="60" fill="none" stroke="#00FF00" stroke-width="1"/>
+  <text x="710" y="375" font-family="monospace" font-size="10" text-anchor="middle" fill="#00FF00">API</text>
+  <text x="710" y="390" font-family="monospace" font-size="10" text-anchor="middle" fill="#00FF00">CONNECTORS</text>
+  
+  <!-- Memory Management Layer -->
+  <rect x="650" y="420" width="120" height="80" fill="none" stroke="#FF8800" stroke-width="2"/>
+  <text x="710" y="440" font-family="monospace" font-size="16" text-anchor="middle" fill="#FF8800">MEMORY</text>
+  <text x="710" y="460" font-family="monospace" font-size="16" text-anchor="middle" fill="#FF8800">MANAGEMENT</text>
+  <text x="710" y="480" font-family="monospace" font-size="10" text-anchor="middle" fill="#FF8800">FORGETTING/RETENTION</text>
+  
+  <!-- Connection Lines -->
+  <!-- Input to Wernicke -->
+  <path d="M 170 160 L 250 160" fill="none" stroke="#00FF00" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 170 250 L 210 210 L 250 180" fill="none" stroke="#00FF00" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 170 340 L 210 260 L 250 200" fill="none" stroke="#00FF00" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- User to Broca -->
+  <path d="M 150 450 L 200 440 L 250 430" fill="none" stroke="#00FFFF" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Broca to User -->
+  <path d="M 250 460 L 200 470 L 150 460" fill="none" stroke="#00FFFF" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Wernicke to Hippocampus -->
+  <path d="M 390 180 L 440 180" fill="none" stroke="#9370DB" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Wernicke to Short-Term -->
+  <path d="M 320 250 L 320 270" fill="none" stroke="#FF8800" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Hippocampus to Long-Term -->
+  <path d="M 510 250 L 510 270" fill="none" stroke="#FF00FF" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Short-Term to Broca -->
+  <path d="M 320 370 L 320 390" fill="none" stroke="#00FFFF" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Long-Term to Short-Term -->
+  <path d="M 440 320 L 390 320" fill="none" stroke="#FF8800" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="415" y="310" font-family="monospace" font-size="10" fill="#FFFFFF">RECALL</text>
+  
+  <!-- External Knowledge to Hippocampus -->
+  <path d="M 650 200 L 580 200" fill="none" stroke="#9370DB" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- External Knowledge to Long-Term -->
+  <path d="M 650 320 L 580 320" fill="none" stroke="#FF00FF" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Memory Management to Long-Term -->
+  <path d="M 650 460 L 600 460 L 580 400" fill="none" stroke="#FF8800" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Process Flow Legend -->
+  <text x="400" y="520" font-family="monospace" font-size="14" text-anchor="middle" fill="#FFFFFF" font-weight="bold">AGENT DIALOGUE MEMORY FLOW</text>
+  <text x="180" y="550" font-family="monospace" font-size="10" text-anchor="middle" fill="#00FF00">INPUT PROCESSING</text>
+  <line x1="230" y1="550" x2="260" y2="550" stroke="#00FF00" stroke-width="2"/>
+  <text x="320" y="550" font-family="monospace" font-size="10" text-anchor="middle" fill="#FF8800">MEMORY OPERATIONS</text>
+  <line x1="370" y1="550" x2="400" y2="550" stroke="#FF8800" stroke-width="2"/>
+  <text x="460" y="550" font-family="monospace" font-size="10" text-anchor="middle" fill="#9370DB">INDEXING</text>
+  <line x1="490" y1="550" x2="520" y2="550" stroke="#9370DB" stroke-width="2"/>
+  <text x="580" y="550" font-family="monospace" font-size="10" text-anchor="middle" fill="#FF00FF">STORAGE</text>
+  <line x1="610" y1="550" x2="640" y2="550" stroke="#FF00FF" stroke-width="2"/>
+  <text x="700" y="550" font-family="monospace" font-size="10" text-anchor="middle" fill="#00FFFF">DIALOGUE</text>
+  <line x1="730" y1="550" x2="760" y2="550" stroke="#00FFFF" stroke-width="2"/>
+  
+  <!-- Arrowhead Definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#FFFFFF"/>
+    </marker>
+  </defs>
+</svg>
