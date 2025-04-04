@@ -4,7 +4,8 @@ require_relative 'configuration/base'
 require_relative 'configuration/openai'
 require_relative 'configuration/openrouter'
 require_relative 'configuration/gemini'
-# require_relative 'configuration/mistral'
+require_relative 'configuration/mistral'
+require_relative 'configuration/huggingface'
 # require_relative 'configuration/groq'
 
 module LlmMemory
@@ -22,7 +23,9 @@ module LlmMemory
     # @return [Configuration::OpenRouter] The OpenRouter-specific configuration settings.
     attr_reader :openrouter
     # @return [Configuration::Mistral] The Mistral-specific configuration settings.
-    # attr_reader :mistral
+    attr_reader :mistral
+
+    attr_reader :huggingface
     # @return [Configuration::Groq] The Groq-specific configuration settings.
     # attr_reader :groq
 
@@ -47,7 +50,8 @@ module LlmMemory
       @openai = Config::OpenAI.new
       @openrouter = Config::OpenRouter.new
       @gemini = Config::Gemini.new
-      # @mistral = Configuration::Mistral.new
+      @mistral = Config::Mistral.new
+      @huggingface = Config::HuggingFace.new
       # @groq = Configuration::Groq.new
 
       # For backward compatibility
@@ -170,6 +174,22 @@ module LlmMemory
     # @deprecated Use {Configuration::Mistral#host=} instead.
     def mistral_host=(value)
       @mistral.host = value
+    end
+
+    def huggingface_api_key
+      @huggingface.api_key
+    end
+
+    def huggingface_api_key=(value)
+      @huggingface.api_key = value
+    end
+
+    def huggingface_embedding_model
+      @huggingface.embedding_model
+    end
+
+    def huggingface_embedding_model=(value)
+      @huggingface.embedding_model = value
     end
 
     # @return [String] The Groq API key.

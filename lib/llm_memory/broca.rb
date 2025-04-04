@@ -6,6 +6,8 @@ require 'tokenizers'
 require_relative 'llms/openai'
 require_relative 'llms/openrouter'
 require_relative 'llms/gemini'
+require_relative 'llms/mistral'
+require_relative 'llms/huggingface'
 
 module LlmMemory
   # The Broca class is responsible for interacting with a Large Language Model (LLM),
@@ -57,7 +59,7 @@ module LlmMemory
       when :mistral
         extend LlmMemory::Llms::Mistral
       when :huggingface
-        @huggingface_client = LlmMemory::Llms::HuggingFaceClient.new
+        extend LlmMemory::Llms::HuggingFace
       else
         raise ArgumentError, "Unsupported provider: #{provider}"
       end
@@ -176,10 +178,14 @@ module LlmMemory
       case @provider
       when :openrouter
         client.chat(parameters: parameters)
+      when :mistral
+        mistral_chat(parameters)
       when :openai
         openai_chat(parameters)
       when :gemini
         gemini_chat(parameters)
+      when :huggingface
+        huggingface_chat(parameters)
       else
         raise "Unsupported provider: #{@provider}"
       end
