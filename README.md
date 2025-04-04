@@ -1,7 +1,8 @@
 # 🧠 LLM Memory 🌊🐴
 
-LLM Memory is a Ruby gem designed to provide large language models (LLMs) like ChatGPT with memory using in-context learning.
-This enables better integration with systems such as Rails and web services while providing a more user-friendly and abstract interface based on brain terms.
+LLM Memory is a Ruby gem that enhances applications using large language models (LLMs) by providing memory through in-context learning. It allows these applications to retain and recall information from previous interactions, enabling more contextually relevant and coherent conversations.
+
+This gem facilitates seamless integration with systems like Rails and web services, offering a user-friendly and abstract interface inspired by brain structures, such as Broca and Wernicke areas, for managing prompts and memories within those applications.
 
 ## Key Features
 
@@ -11,50 +12,115 @@ This enables better integration with systems such as Rails and web services whil
 - Focus on integration with existing systems
 - Easy-to-understand abstraction using brain-related terms
 - Plugin architecture for custom loader creation and extending LLM support
+- Support for multiple LLM providers, including Gemini, Hugging Face, Mistral, and OpenRouter
+
+## Key Components
+
+### Input Processing (Wernicke)
+
+- Handles initial interpretation of all input sources.
+- Leverages foundation models (OpenAI, Mistral, Gemini).
+- Routes processed information to memory systems.
+
+### Memory Structure
+
+#### Short-Term Memory
+
+- Maintains working context and active dialogue state.
+- Holds immediately relevant information for the current conversation.
+- Direct connection to response generation.
+
+#### Long-Term Memory
+
+- Implemented via dual storage systems:
+  - Redis/RedisSearch for fast vector retrieval.
+  - Postgres/pgVector for persistent relational storage.
+- Supports semantic recall of historical interactions.
+
+### Processing Components
+
+- **Hippocampus:** Handles memory indexing, semantic chunking, and relevance scoring.
+- **Broca:** Generates responses by fusing active context with retrieved memories.
+
+### External Systems
+
+- Knowledge bases and API connectors augment internal memory.
+- Memory management module handles forgetting/retention policies.
+
+### Information Flow
+
+The diagram shows clear pathways between components:
+
+- Input sources feed directly to processing.
+- Short-term memory receives processed input and recalled long-term memories.
+- Long-term memory stores indexed information and supplies relevant context.
+- Response generation uses combined memory types for coherent dialogue.
+
+This architecture provides your agent with both immediate conversational awareness and access to deeper historical context, ensuring more natural and contextually appropriate dialogue generation.
 
 ## LLM Memory Components
 
-![llm_memory_diagram](https://github.com/shohey1226/llm_memory/assets/1880965/b77d0efa-3fec-4549-b98a-eae510de5c3d)
+![llm_memory_diagram](docs/updated-llm-memory-diagram.svg)
 
 1. LlmMemory::Wernicke: Responsible for loading external data (currently from files). More loader types are planned for future development.
 
-> Wernicke's area in brain is involved in the comprehension of written and spoken language
+    > Wernicke's area in brain is involved in the comprehension of written and spoken language
 
-2. LlmMemory::Hippocampus: Handles interaction with vector databases to retrieve relevant information based on the query. Currently, Redis with the Redisearch module is used as the vector database. (Note that Redisearch is a proprietary modules and available on RedisCloud, which offers a free plan). The reason for choosing this is that Redis is commonly used and easy to integrate with web services.
+2. LlmMemory::Hippocampus: Handles interaction with vector databases to retrieve relevant information based on the query. It can use either Redis with the Redisearch module or pgvector as the vector database. (Note that Redisearch is a proprietary module and available on RedisCloud, which offers a free plan). The reason for choosing Redis initially was that it is commonly used and easy to integrate with web services. pgvector offers efficient similarity search and retrieval of relevant information.
 
-> Hippocampus in brain plays important roles in the consolidation of information from short-term memory to long-term memory
+    > Hippocampus in brain plays important roles in the consolidation of information from short-term memory to long-term memory
 
-3. LlmMemory::Broca: Responds to queries using memories provided by the Hippocampus component. ERB is used for prompt templates, and a variety of templates can be found online (e.g., in [LangChain Hub](https://github.com/hwchase17/langchain-hub#-prompts)).
+3. LlmMemory::Broca: Responds to queries using memories provided by the Hippocampus component. ERB is used for prompt templates.
 
-> Broca's area in brain is also known as the motor speech area.
+    > Broca's area in brain is also known as the motor speech area.
 
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
 
-    $ bundle add llm_memory
+    bundle add llm_memory
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install llm_memory
+    gem install llm_memory
 
 ### Setup
 
-Set environment variable `OPENAI_ACCESS_TOKEN` and `REDISCLOUD_URL`
-or set in initializer.
+Set environment variables for the LLM providers and Redis:
+`OPENAI_ACCESS_TOKEN`, `GEMINI_API_KEY`, `HUGGINGFACE_API_KEY`, `MISTRAL_API_KEY`, `OPENROUTER_API_KEY`, and `REDISCLOUD_URL`.
+You can also set these in the initializer:
 
 ```ruby
 LlmMemory.configure do |c|
   c.openai_access_token = "xxxxx"
+  c.gemini_api_key = "xxxxx"
+  c.huggingface_api_key = "xxxxx"
+  c.mistral_api_key = "xxxxx"
+  c.openrouter_api_key = "xxxxx"
   c.redis_url = "redis://xxxx:6379"
+  c.pg_url = "postgresql://user:password@host:port/database" # Required if using pgvector
 end
 ```
+
+To use pgvector, you will also need to:
+
+1. Install the `pgvector` extension in your PostgreSQL database:
+
+    ```sql
+    CREATE EXTENSION IF NOT EXISTS vector;
+    ```
 
 ## Usage
 
 To use LLM Memory, follow these steps:
 
-If you want to use pgvector instead of Redisearch. You can use the plugin. Please check the doc and change the setup steps(2&3)
+If you want to use pgvector instead of Redisearch, you can use the plugin. Please check the doc and change the setup steps(2&3).
+
+To use pgvector, initialize Hippocampus with the pgvector store:
+
+```ruby
+hippocampus = LlmMemory::Hippocampus.new(store: :pgvector)
+```
 
 1. Install the gem: gem install llm_memory
 2. Set up Redis with Redisearch module enabled - Go to [Reids Cloud](https://redis.com/redis-enterprise-cloud/overview/) and get the redis url.
@@ -103,7 +169,24 @@ Given the context information and not prior knowledge,
 answer the question: <%= query_str %>
 TEMPLATE
 
-broca = LlmMemory::Broca.new(prompt: prompt, model: 'gpt-3.5-turbo')
+# OpenAI
+broca = LlmMemory::Broca.new(prompt: prompt, provider: :openai, model: 'gpt-3.5-turbo')
+message = broca.respond(query_str: query_str, related_docs: related_docs)
+
+# Gemini
+broca = LlmMemory::Broca.new(prompt: prompt, provider: :gemini, model: 'gemini-pro')
+message = broca.respond(query_str: query_str, related_docs: related_docs)
+
+# Hugging Face
+broca = LlmMemory::Broca.new(prompt: prompt, provider: :huggingface, model: 'HuggingFaceH4/zephyr-7b-beta')
+message = broca.respond(query_str: query_str, related_docs: related_docs)
+
+# Mistral
+broca = LlmMemory::Broca.new(prompt: prompt, provider: :mistral, model: 'mistral-tiny')
+message = broca.respond(query_str: query_str, related_docs: related_docs)
+
+# OpenRouter
+broca = LlmMemory::Broca.new(prompt: prompt, provider: :openrouter ,model: 'google/palm-2')
 message = broca.respond(query_str: query_str, related_docs: related_docs)
 
 ...
@@ -118,26 +201,23 @@ The table below provides a list of plugins utilized by llm_memory. The aim is to
 
 Install the plugin and update the method.
 
-For example, if you wan to use pgvector. then,
+For example, if you wan to use gmail then,
 
 ```
-$ bundle add llm_memory_pgvector
+bundle add llm_memory_gmail_loader
 ```
-
-Then, load it instead of `:redis` (default is redis).
 
 ```ruby
 # may need to have require depending on the project
-# require llm_memory_pgvector
-hippocamups = LlmMemory::Hippocampus.new(store: :pgvector)`
+require llm_memory_gmail_loader
+
 ```
 
 Please refer to the links for the details.
 
-| Plugin Name             | Type   | Module      | Link                                                          |
-| ----------------------- | ------ | ----------- | ------------------------------------------------------------- |
-| llm_memory_gmail_loader | Loader | Wernicke    | [link](https://github.com/shohey1226/llm_memory_gmail_loader) |
-| llm_memory_pgvector     | Store  | Hippocampus | [link](https://github.com/shohey1226/llm_memory_pgvector)     |
+| Plugin Name             | Type   | Module   | Description            | Link                                                          |
+| ----------------------- | ------ | -------- | ---------------------- | ------------------------------------------------------------- |
+| llm_memory_gmail_loader | Loader | Wernicke | Loads data from Gmail. | [link](https://github.com/shohey1226/llm_memory_gmail_loader) |
 
 ## Development
 
@@ -147,7 +227,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/shohey1226/llm_memory. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/shohey1226/llm_memory/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at <https://github.com/shohey1226/llm_memory>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/shohey1226/llm_memory/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
