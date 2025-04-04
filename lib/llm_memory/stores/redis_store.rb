@@ -1,6 +1,6 @@
-require "redis"
-require_relative "../store"
-require "json"
+require 'redis'
+require_relative '../store'
+require 'json'
 
 module LlmMemory
   class RedisStore
@@ -9,10 +9,10 @@ module LlmMemory
     register_store :redis
 
     def initialize(
-      index_name: "llm_memory",
-      content_key: "content",
-      vector_key: "vector",
-      metadata_key: "metadata"
+      index_name: 'llm_memory',
+      content_key: 'content',
+      vector_key: 'vector',
+      metadata_key: 'metadata'
     )
       @index_name = index_name
       @content_key = content_key
@@ -22,7 +22,7 @@ module LlmMemory
     end
 
     def info
-      @client.call(["INFO"])
+      @client.call(['INFO'])
     end
 
     def load_data(file_path)
@@ -30,13 +30,13 @@ module LlmMemory
     end
 
     def list_indexes
-      @client.call("FT._LIST")
+      @client.call('FT._LIST')
     end
 
     def index_exists?
       begin
-        @client.call(["FT.INFO", @index_name])
-      rescue
+        @client.call(['FT.INFO', @index_name])
+      rescue StandardError
         return false
       end
       true
@@ -44,11 +44,11 @@ module LlmMemory
 
     def drop_index
       # DD deletes all document hashes
-      @client.call(["FT.DROPINDEX", @index_name, "DD"])
+      @client.call(['FT.DROPINDEX', @index_name, 'DD'])
     end
 
     # dimention: 1536 for ada-002
-    def create_index(dim: 1536, distance_metric: "COSINE")
+    def create_index(dim: 1536, distance_metric: 'COSINE')
       # LangChain index
       # schema = (
       #   TextField(name=content_key),
@@ -64,12 +64,12 @@ module LlmMemory
       #   ),
       # )
       command = [
-        "FT.CREATE", @index_name, "ON", "HASH",
-        "PREFIX", "1", "#{@index_name}:",
-        "SCHEMA",
-        @content_key, "TEXT",
-        @metadata_key, "TEXT",
-        @vector_key, "VECTOR", "FLAT", 6, "TYPE", "FLOAT32", "DIM", dim, "DISTANCE_METRIC", distance_metric
+        'FT.CREATE', @index_name, 'ON', 'HASH',
+        'PREFIX', '1', "#{@index_name}:",
+        'SCHEMA',
+        @content_key, 'TEXT',
+        @metadata_key, 'TEXT',
+        @vector_key, 'VECTOR', 'FLAT', 6, 'TYPE', 'FLOAT32', 'DIM', dim, 'DISTANCE_METRIC', distance_metric
       ]
       @client.call(command)
     end
@@ -81,12 +81,12 @@ module LlmMemory
         data.each_with_index do |d, i|
           key = @index_name # index_name:create_time:metadata_timestamp:uuid
           timestamp = d.dig(:metadata, :timestamp)
-          key += ":#{Time.now.strftime("%Y%m%d%H%M%S")}"
+          key += ":#{Time.now.strftime('%Y%m%d%H%M%S')}"
           key += ":#{timestamp}"
           key += ":#{SecureRandom.hex(8)}"
 
-          meta_json = d[:metadata].nil? ? "" : d[:metadata].to_json # serialize
-          vector_value = d[:vector].map(&:to_f).pack("f*")
+          meta_json = d[:metadata].nil? ? '' : d[:metadata].to_json # serialize
+          vector_value = d[:vector].map(&:to_f).pack('f*')
           pipeline.hset(
             key,
             {
@@ -118,7 +118,7 @@ module LlmMemory
     # rescue Redis::BaseConnectionError => e
     #   # Handle connection errors
     #   puts "Connection Error: #{e.message}"
-    rescue => e
+    rescue StandardError => e
       # Handle any other errors
       puts "Unexpected Error: #{e.message}"
     end
@@ -138,7 +138,7 @@ module LlmMemory
     end
 
     def list(*args)
-      pattern = "#{@index_name}:#{args.first || "*"}"
+      pattern = "#{@index_name}:#{args.first || '*'}"
       @client.keys(pattern)
     end
 
@@ -146,35 +146,35 @@ module LlmMemory
     end
 
     def search(query: [], k: 3)
-      packed_query = query.map(&:to_f).pack("f*")
+      packed_query = query.map(&:to_f).pack('f*')
       command = [
-        "FT.SEARCH",
+        'FT.SEARCH',
         @index_name,
         "*=>[KNN #{k} @vector $blob AS vector_score]",
-        "PARAMS",
+        'PARAMS',
         2,
-        "blob",
+        'blob',
         packed_query,
-        "SORTBY",
-        "vector_score",
-        "ASC",
-        "LIMIT",
+        'SORTBY',
+        'vector_score',
+        'ASC',
+        'LIMIT',
         0,
         k,
-        "RETURN",
+        'RETURN',
         3,
-        "vector_score",
+        'vector_score',
         @content_key,
         @metadata_key,
-        "DIALECT",
+        'DIALECT',
         2
       ]
       response_list = @client.call(command)
       response_list.shift # the first one is the size
       # now [redis_key1, [],,, ]
-      result = response_list.each_slice(2).to_h.values.map { |v|
+      result = response_list.each_slice(2).to_h.values.map do |v|
         v.each_slice(2).to_h.transform_keys(&:to_sym)
-      }
+      end
       result.each do |item|
         hash = JSON.parse(item[:metadata])
         item[:metadata] = hash.transform_keys(&:to_sym)

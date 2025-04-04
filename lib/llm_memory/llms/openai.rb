@@ -1,5 +1,5 @@
-require "openai"
-require "llm_memory"
+require 'openai'
+require 'llm_memory'
 
 module LlmMemory
   module Llms

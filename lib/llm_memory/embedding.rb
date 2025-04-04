@@ -23,8 +23,8 @@ module LlmMemory
       @embeddings[name] = klass
     end
 
-    def self.embeddings
-      @embeddings
+    class << self
+      attr_reader :embeddings
     end
   end
 end

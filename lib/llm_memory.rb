@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "logger"
+require 'logger'
 # config
-require_relative "llm_memory/configuration"
-require_relative "llm_memory/hippocampus"
-require_relative "llm_memory/broca"
-require_relative "llm_memory/wernicke"
-require_relative "llm_memory/version"
+require_relative 'llm_memory/configuration'
+require_relative 'llm_memory/hippocampus'
+require_relative 'llm_memory/broca'
+require_relative 'llm_memory/wernicke'
+require_relative 'llm_memory/version'
 
 module LlmMemory
   class Error < StandardError; end

@@ -1,8 +1,8 @@
-require_relative "store"
-require_relative "stores/redis_store"
+require_relative 'store'
+require_relative 'stores/redis_store'
 
-require_relative "embedding"
-require_relative "embeddings/openai"
+require_relative 'embedding'
+require_relative 'embeddings/openai'
 
 module LlmMemory
   class Hippocampus
@@ -11,16 +11,18 @@ module LlmMemory
       chunk_size: 1024,
       chunk_overlap: 50,
       store: :redis,
-      index_name: "llm_memory"
+      index_name: 'llm_memory'
     )
       LlmMemory.configure
 
       embedding_class = EmbeddingManager.embeddings[embedding_name]
       raise "Embedding '#{embedding_name}' not found." unless embedding_class
+
       @embedding_instance = embedding_class.new
 
       store_class = StoreManager.stores[store]
       raise "Store '#{store}' not found." unless store_class
+
       @store = store_class.new(index_name: index_name)
 
       # char count, not word count
@@ -35,9 +37,9 @@ module LlmMemory
           hash.key?(:content) && hash[:content].is_a?(String) &&
           hash.key?(:metadata) && hash[:metadata].is_a?(Hash)
       end
-      unless is_valid
-        raise "Your documents need to have an array of hashes (content: string and metadata: hash)"
-      end
+      return if is_valid
+
+      raise 'Your documents need to have an array of hashes (content: string and metadata: hash)'
     end
 
     def memorize(docs)
@@ -77,10 +79,10 @@ module LlmMemory
         metadata = doc[:metadata]
         vector = @embedding_instance.embed_document(content)
         result.push({
-          content: content,
-          metadata: metadata,
-          vector: vector
-        })
+                      content: content,
+                      metadata: metadata,
+                      vector: vector
+                    })
       end
       result
     end
@@ -95,12 +97,13 @@ module LlmMemory
           while start_index < content.length
             end_index = [start_index + @chunk_size, content.length].min
             chunk = content[start_index...end_index]
-            result << {content: chunk, metadata: metadata}
+            result << { content: chunk, metadata: metadata }
             break if end_index == content.length
+
             start_index += @chunk_size - @chunk_overlap
           end
         else
-          result << {content: content, metadata: metadata}
+          result << { content: content, metadata: metadata }
         end
       end
       result

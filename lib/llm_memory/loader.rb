@@ -23,8 +23,8 @@ module LlmMemory
       @loaders[name] = klass
     end
 
-    def self.loaders
-      @loaders
+    class << self
+      attr_reader :loaders
     end
   end
 end

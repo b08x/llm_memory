@@ -1,5 +1,5 @@
-require "find"
-require_relative "../loader"
+require 'find'
+require_relative '../loader'
 
 module LlmMemory
   class FileLoader
@@ -20,7 +20,7 @@ module LlmMemory
           content: file_content,
           metadata: {
             file_name: file_name,
-            timestamp: ctime.strftime("%Y%m%d%H%M%S") # YYMMDDHHmmss
+            timestamp: ctime.strftime('%Y%m%d%H%M%S') # YYMMDDHHmmss
           }
         }
       end

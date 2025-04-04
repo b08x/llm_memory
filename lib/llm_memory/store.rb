@@ -47,8 +47,8 @@ module LlmMemory
       @stores[name] = klass
     end
 
-    def self.stores
-      @stores
+    class << self
+      attr_reader :stores
     end
   end
 end
