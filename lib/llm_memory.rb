@@ -27,13 +27,7 @@ module LlmMemory
   class Error < StandardError; end
 
   class << self
-    attr_accessor :configuration, :log_level
-
-    # def logger
-    #   @logger ||= Logger.new($stdout).tap do |logger|
-    #     logger.level = log_level || Logger::INFO
-    #   end
-    # end
+    attr_accessor :configuration
   end
 
   def self.configure
