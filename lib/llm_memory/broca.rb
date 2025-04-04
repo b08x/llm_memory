@@ -1,6 +1,9 @@
 require 'erb'
 require 'tokenizers'
 
+require_relative 'llms/openai'
+require_relative 'llms/openrouter'
+
 module LlmMemory
   # The Broca class is responsible for interacting with a Large Language Model (LLM),
   # such as OpenAI's GPT models. It handles prompt generation, sending requests to the LLM,
@@ -8,7 +11,7 @@ module LlmMemory
   # the token count to stay within the model's limits and for formatting responses
   # according to a specified schema.
   class Broca
-    include Llms::Openai
+    include Llms::OpenRouter
     attr_accessor :messages
 
     # Initializes a new Broca instance.
@@ -24,6 +27,7 @@ module LlmMemory
       max_token: 4096
     )
       LlmMemory.configure
+      @provider = :openrouter
       @prompt = prompt
       @model = model
       @messages = []

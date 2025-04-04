@@ -14,3 +14,6 @@
 .ruby-gemset
 .ruby-version
 /.vscode/
+/.qodo/
+/vendor/
+llm_memory.code-workspace

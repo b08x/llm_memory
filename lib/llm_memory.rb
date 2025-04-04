@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
+lib_dir = File.expand_path(File.join(__dir__, '..', 'lib'))
+$LOAD_PATH.unshift lib_dir unless $LOAD_PATH.include?(lib_dir)
+
 require 'logger'
 # config
-require_relative 'llm_memory/configuration'
-require_relative 'llm_memory/hippocampus'
-require_relative 'llm_memory/broca'
-require_relative 'llm_memory/wernicke'
-require_relative 'llm_memory/version'
+require 'llm_memory/configuration'
+require 'llm_memory/hippocampus'
+require 'llm_memory/broca'
+require 'llm_memory/wernicke'
+require 'llm_memory/version'
 
 module LlmMemory
   class Error < StandardError; end
