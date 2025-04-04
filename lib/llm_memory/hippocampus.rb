@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'lingua'
 # require 'ruby-spacy'
 # require 'tf-idf-similarity'
 # require 'bm25'
@@ -19,10 +20,10 @@ module LlmMemory
   # It handles the chunking of documents, embedding them into vectors,
   # and storing/retrieving them from a specified store.
   class Hippocampus
-    # @param embedding_name [Symbol] The name of the embedding to use. Defaults to :openai.
-    # @param chunk_size [Integer] The size of each chunk. Defaults to 1024.
-    # @param chunk_overlap [Integer] The overlap between chunks. Defaults to 50.
-    # @param store [Symbol] The name of the store to use. Defaults to :redis.
+    # @param embedding_name [Symbol] The name of the embedding to use. Defaults to :gemini.
+    # @param chunk_size [Integer] The target character size of each chunk. Defaults to 1024.
+    # @param chunk_overlap [Integer] The target character overlap between chunks. Defaults to 50.
+    # @param store [Symbol] The name of the store to use. Defaults to :pgvector.
     # @param index_name [String] The name of the index in the store. Defaults to 'llm_memory'.
     # @raise [RuntimeError] if the embedding or store is not found.
     def initialize(
@@ -44,9 +45,11 @@ module LlmMemory
 
       @store = store_class.new(index_name: index_name)
 
-      # char count, not word count
+      # Target char count, actual chunk size will vary based on sentence boundaries
       @chunk_size = chunk_size
       @chunk_overlap = chunk_overlap
+      # Ensure overlap is smaller than chunk size
+      raise ArgumentError, 'chunk_overlap must be less than chunk_size' if @chunk_overlap >= @chunk_size
     end
 
     # Validates the format of the documents.
@@ -138,30 +141,99 @@ module LlmMemory
       result
     end
 
-    # Chunks the given documents into smaller pieces.
+    # Chunks the given documents into smaller pieces based on sentence boundaries using the Lingua gem.
+    # Aims to create chunks close to `chunk_size` characters, respecting sentence endings.
+    # Implements overlap by retaining trailing sentences from the previous chunk.
     #
     # @param docs [Array<Hash>] An array of documents.
     # @return [Array<Hash>] An array of chunked documents.
     def make_chunks(docs)
-      result = []
-      docs.each do |item|
-        content = item[:content]
-        metadata = item[:metadata]
-        if content.length > @chunk_size
-          start_index = 0
-          while start_index < content.length
-            end_index = [start_index + @chunk_size, content.length].min
-            chunk = content[start_index...end_index]
-            result << { content: chunk, metadata: metadata }
-            break if end_index == content.length
+      all_chunks = []
 
-            start_index += @chunk_size - @chunk_overlap
-          end
-        else
-          result << { content: content, metadata: metadata }
+      docs.each do |item|
+        content = item[:content].to_s.strip # Ensure string and remove leading/trailing whitespace
+        metadata = item[:metadata]
+
+        # Use Lingua for sentence splitting
+        readability = Lingua::EN::Readability.new(content)
+        sentences = readability.sentences.map(&:strip).reject(&:empty?)
+
+        # Handle cases with no sentences or content shorter than chunk size
+        if sentences.empty?
+          all_chunks << { content: content, metadata: metadata } unless content.empty?
+          next
+        elsif content.length <= @chunk_size && sentences.length <= 1 # Treat as single unit if short and one sentence
+          all_chunks << { content: content, metadata: metadata }
+          next
         end
-      end
-      result
+
+        current_chunk_sentences = []
+        current_chunk_len = 0
+        sentence_index_for_overlap = 0 # Track where the overlap for the *next* chunk should start
+
+        sentences.each_with_index do |sentence, i|
+          sentence_len = sentence.length
+          # Calculate length if sentence is added (plus 1 for space, unless it's the first sentence)
+          potential_len = current_chunk_len + (current_chunk_sentences.empty? ? 0 : 1) + sentence_len
+
+          if !current_chunk_sentences.empty? && potential_len > @chunk_size
+            # Current chunk is full, finalize it
+            chunk_text = current_chunk_sentences.join(' ')
+            all_chunks << { content: chunk_text, metadata: metadata }
+
+            # --- Overlap Calculation ---
+            # Find the sentence index to start the overlap from, aiming for @chunk_overlap characters
+            overlap_char_target = chunk_text.length - @chunk_overlap
+            current_overlap_len = 0
+            start_index_found = false
+
+            # Iterate backwards through the sentences of the completed chunk
+            (current_chunk_sentences.length - 1).downto(0) do |idx|
+              s = current_chunk_sentences[idx]
+              # Calculate length including space (except for the very first sentence considered for overlap)
+              s_len_with_space = s.length + (idx > 0 ? 1 : 0)
+
+              if current_overlap_len + s_len_with_space >= @chunk_overlap
+                # This sentence makes the overlap long enough or too long.
+                # The *next* sentence (idx + 1) is where the overlap *should* have started,
+                # but since we iterate backwards, `idx` is the first sentence fully *within* the desired overlap window.
+                sentence_index_for_overlap = idx
+                start_index_found = true
+                break
+              end
+              current_overlap_len += s_len_with_space
+            end
+
+            # Fallback: If overlap calculation didn't find a suitable index (e.g., one long sentence),
+            # start overlap from the last sentence of the previous chunk.
+            sentence_index_for_overlap = current_chunk_sentences.length - 1 unless start_index_found
+            # --- End Overlap Calculation ---
+
+            # Start the new chunk with overlapping sentences
+            new_chunk_sentences = current_chunk_sentences[sentence_index_for_overlap..] || []
+
+            # Add the current sentence (that caused the split) to the new chunk
+            # unless it was already part of the overlap calculation base and is the *only* sentence.
+            # This check prevents duplicating the sentence if it was the single sentence causing overflow.
+            new_chunk_sentences << sentence if new_chunk_sentences.empty? || new_chunk_sentences.last != sentence
+
+            current_chunk_sentences = new_chunk_sentences
+            current_chunk_len = current_chunk_sentences.join(' ').length
+
+          else
+            # Add sentence to current chunk
+            current_chunk_sentences << sentence
+            current_chunk_len = potential_len # Use calculated potential length
+          end
+        end # sentences.each
+
+        # Add the last remaining chunk
+        unless current_chunk_sentences.empty?
+          all_chunks << { content: current_chunk_sentences.join(' '), metadata: metadata }
+        end
+      end # docs.each
+
+      all_chunks
     end
-  end
-end
+  end # class Hippocampus
+end # module LlmMemory
