@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'store'
 require_relative 'stores/redis_store'
 require_relative 'stores/pgvector_store'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pg'
 require 'pgvector'
 require_relative '../store'

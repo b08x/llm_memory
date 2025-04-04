@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../embedding'
 require_relative '../llms/openai'
 
