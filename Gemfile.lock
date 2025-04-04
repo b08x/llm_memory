@@ -126,6 +126,8 @@ GEM
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
+    hugging-face (0.3.5)
+      faraday (>= 1.0)
     io-console (0.8.0)
     jaro_winkler (1.6.0)
     json (2.10.2)
@@ -472,6 +474,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  hugging-face (~> 0.3.5)
   llm_memory!
   llm_memory_pgvector (~> 0.1.5)
   pry-stack_explorer

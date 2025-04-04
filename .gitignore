@@ -17,3 +17,4 @@
 /.qodo/
 /vendor/
 llm_memory.code-workspace
+/log/

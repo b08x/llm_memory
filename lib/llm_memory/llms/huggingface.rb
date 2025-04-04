@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'hugging_face'
-require 'llm_memory'
-
 module LlmMemory
   module Llms
     # Client for interacting with the Hugging Face Inference API.
@@ -17,23 +14,35 @@ module LlmMemory
       #   value of the `HUGGING_FACE_API_TOKEN` environment variable.
       # @raise [ArgumentError] if the api_token is nil or empty.
       def client
-        @client ||= HuggingFace::InferenceApi.new(
+        require 'hugging_face'
+        @client ||= ::HuggingFace::InferenceApi.new(
           api_token: ENV.fetch('HUGGING_FACE_API_TOKEN')
         )
       end
 
+      # Send a chat request to Hugging Face
+      # @param parameters [Hash, Array] Either a hash with :messages key or an array of messages directly
+      # @return [String] The generated text response
       def huggingface_chat(parameters)
-        model = parameters[:model]
-        input = parameters[:messages][0][:content]
+        # Extract the input text from parameters
+        input = if parameters.is_a?(Hash) && parameters[:messages].is_a?(Array)
+                  # Handle case where parameters is a hash with :messages key
+                  parameters[:messages][0][:content]
+                elsif parameters.is_a?(Array)
+                  # Handle case where parameters is an array of messages directly
+                  parameters[0][:content]
+                else
+                  # Handle case where parameters might be a single message
+                  parameters.is_a?(Hash) ? parameters[:content] : parameters.to_s
+                end
 
         begin
-          response = client.text_generation(input, model: model)
+          client.text_generation(input: input)
         rescue StandardError => e
-          LlmMemory.logger.error("Gemini API error: #{e.message}")
+          logger.error("Huggingface API error: #{e}")
           raise e
         end
-        
-
+      end
     end
   end
 end

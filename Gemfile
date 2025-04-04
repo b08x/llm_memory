@@ -6,3 +6,5 @@ source 'https://rubygems.org'
 gemspec
 
 gem "llm_memory_pgvector", "~> 0.1.5"
+
+gem "hugging-face", "~> 0.3.5"
