@@ -79,13 +79,13 @@ module LlmMemory
           messages: @messages,
           temperature: @temperature
         )
-        LlmMemory.logger.debug(response)
+        logger.debug(response)
         p response
         response_content = response.dig('choices', 0, 'message', 'content')
         @messages.push({ role: 'system', content: response_content }) unless response_content.nil?
         response_content
       rescue StandardError => e
-        LlmMemory.logger.info(e.inspect)
+        logger.info(e.inspect)
         # @messages = []
         nil
       end
@@ -117,7 +117,7 @@ module LlmMemory
             }
           ]
         )
-        LlmMemory.logger.debug(response)
+        logger.debug(response)
         message = response.dig('choices', 0, 'message')
         if message['role'] == 'assistant' && message['function_call']
           function_name = message.dig('function_call', 'name')
@@ -129,7 +129,7 @@ module LlmMemory
           args if function_name == 'broca'
         end
       rescue StandardError => e
-        LlmMemory.logger.info(e.inspect)
+        logger.info(e.inspect)
         nil
       end
     end

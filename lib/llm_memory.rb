@@ -3,7 +3,9 @@
 lib_dir = File.expand_path(File.join(__dir__, '..', 'lib'))
 $LOAD_PATH.unshift lib_dir unless $LOAD_PATH.include?(lib_dir)
 
-require 'logger'
+require 'llm_memory/logging'
+include Logging
+
 require 'dotenv/load'
 
 # Attempts to load the .env file, overwriting existing environment variables.
@@ -27,11 +29,11 @@ module LlmMemory
   class << self
     attr_accessor :configuration, :log_level
 
-    def logger
-      @logger ||= Logger.new($stdout).tap do |logger|
-        logger.level = log_level || Logger::INFO
-      end
-    end
+    # def logger
+    #   @logger ||= Logger.new($stdout).tap do |logger|
+    #     logger.level = log_level || Logger::INFO
+    #   end
+    # end
   end
 
   def self.configure

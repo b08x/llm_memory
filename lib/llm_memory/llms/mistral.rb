@@ -44,7 +44,7 @@ module LlmMemory
             ]
           }
         rescue StandardError => e
-          LlmMemory.logger.error("Mistral API error: #{e.message}")
+          logger.error("Mistral API error: #{e.message}")
           raise e
         end
       end

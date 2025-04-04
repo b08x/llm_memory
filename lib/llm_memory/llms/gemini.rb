@@ -76,7 +76,7 @@ module LlmMemory
             ]
           }
         rescue StandardError => e
-          LlmMemory.logger.error("Gemini API error: #{e.message}")
+          logger.error("Gemini API error: #{e.message}")
           raise e
         end
       end
