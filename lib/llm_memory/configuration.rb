@@ -3,8 +3,8 @@
 
 require_relative 'configuration/base'
 require_relative 'configuration/openai'
-# require_relative 'configuration/gemini'
 require_relative 'configuration/openrouter'
+require_relative 'configuration/gemini'
 # require_relative 'configuration/mistral'
 # require_relative 'configuration/groq'
 
@@ -19,7 +19,7 @@ module LlmMemory
     # @return [Configuration::OpenAI] The OpenAI-specific configuration settings.
     attr_reader :openai
     # @return [Configuration::Gemini] The Gemini-specific configuration settings.
-    # attr_reader :gemini
+    attr_reader :gemini
     # @return [Configuration::OpenRouter] The OpenRouter-specific configuration settings.
     attr_reader :openrouter
     # @return [Configuration::Mistral] The Mistral-specific configuration settings.
@@ -44,8 +44,8 @@ module LlmMemory
     def initialize
       @base = Config::Base.new
       @openai = Config::OpenAI.new
-      # @gemini = Configuration::Gemini.new
       @openrouter = Config::OpenRouter.new
+      @gemini = Config::Gemini.new
       # @mistral = Configuration::Mistral.new
       # @groq = Configuration::Groq.new
 
