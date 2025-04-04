@@ -24,7 +24,7 @@ module LlmMemory
       # The default model defaults to the 'GEMINI_DEFAULT_MODEL' environment variable.
       def initialize
         @api_key = ENV.fetch('GEMINI_API_KEY')
-        @default_model = ENV.fetch('GEMINI_DEFAULT_MODEL')
+        @default_model = ENV.fetch('GEMINI_DEFAULT_MODEL') || 'gemini-2.0-flash'
       end
     end
   end

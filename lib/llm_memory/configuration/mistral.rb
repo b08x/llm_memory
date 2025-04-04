@@ -29,7 +29,7 @@ module LlmMemory
       # The host defaults to the 'MISTRAL_HOST' environment variable or 'https://api.mistral.ai' if not set.
       def initialize
         @api_key = ENV['MISTRAL_API_KEY']
-        @default_model = ENV['MISTRAL_DEFAULT_MODEL']
+        @default_model = ENV['MISTRAL_DEFAULT_MODEL'] || 'mistral-large'
         @host = ENV['MISTRAL_HOST'] || 'https://api.mistral.ai'
       end
     end

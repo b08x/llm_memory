@@ -13,10 +13,11 @@ module LlmMemory
     class HuggingFace
       # @return [String] The Gemini API key.
       attr_accessor :api_token
-      # @return [String] The default Gemini model.
-      attr_accessor :embedding_model
 
       attr_accessor :default_model
+
+      # @return [String] The default HF embedding model.
+      attr_accessor :embedding_model
 
       # Initializes a new Gemini configuration instance.
       #
@@ -26,7 +27,7 @@ module LlmMemory
       # The default model defaults to the 'GEMINI_DEFAULT_MODEL' environment variable.
       def initialize
         @api_token = ENV.fetch('HUGGING_FACE_API_TOKEN')
-        @default_model = ENV.fetch('HUGGING_FACE_DEFAULT_MODEL')
+        @default_model = ENV.fetch('HUGGING_FACE_DEFAULT_MODEL') || 'Qwen/Qwen2.5-Coder-32B-Instruct'
         @embedding_model = ENV.fetch('HUGGING_FACE_EMBEDDING_MODEL') || 'sentence-transformers/all-MiniLM-L6-v2'
       end
     end

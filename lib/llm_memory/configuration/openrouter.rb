@@ -29,7 +29,7 @@ module LlmMemory
       # The host defaults to the 'OPENAI_BASE_URI' environment variable or 'https://open_router.ai' if not set.
       def initialize
         @access_token = ENV['OPENROUTER_API_KEY']
-        @default_model = ENV['OPENROUTER_DEFAULT_MODEL']
+        @default_model = ENV['OPENROUTER_DEFAULT_MODEL'] || 'google/gemini-2.0-flash-001'
         @uri_base = ENV['OPENROUTER_BASE_URI'] || 'https://open_router.ai'
       end
     end

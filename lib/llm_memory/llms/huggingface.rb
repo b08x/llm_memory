@@ -35,9 +35,10 @@ module LlmMemory
                   # Handle case where parameters might be a single message
                   parameters.is_a?(Hash) ? parameters[:content] : parameters.to_s
                 end
+        model = parameters[:model] || LlmMemory.configuration.huggingface_default_model
 
         begin
-          client.text_generation(input: input)
+          client.text_generation(input: input, model: model)
         rescue StandardError => e
           logger.error("Huggingface API error: #{e}")
           raise e

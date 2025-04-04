@@ -16,12 +16,15 @@ module LlmMemory
       # @return [String] The OpenAI organization ID.
       attr_accessor :organization_id
 
+      attr_accessor :default_model
+
       # Initializes a new OpenAI configuration instance.
       #
       # Sets the default API key from the environment variable 'OPENAI_API_KEY'.
       # The organization ID is initially set to nil.
       def initialize
         @access_token = ENV['OPENAI_API_KEY']
+        @default_model = ENV['OPENAI_DEFAULT_MODEL'] || 'gpt-3.5-turbo'
         @organization_id = nil
       end
     end

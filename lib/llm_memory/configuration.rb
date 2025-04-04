@@ -184,6 +184,14 @@ module LlmMemory
       @huggingface.api_key = value
     end
 
+    def huggingface_default_model
+      @huggingface.default_model
+    end
+
+    def huggingface_default_model=(value)
+      @huggingface.default_model = value
+    end
+
     def huggingface_embedding_model
       @huggingface.embedding_model
     end
