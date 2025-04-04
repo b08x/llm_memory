@@ -9,9 +9,11 @@ module LlmMemory
     #
     # It allows you to generate embeddings for both single documents and multiple documents.
     #
-    # @example
+    # @example Embed a single document
     #   mistral_embedding = LlmMemory::Embeddings::Mistral.new
     #   document_embedding = mistral_embedding.embed_document("This is a document.")
+    # @example Embed multiple documents
+    #   mistral_embedding = LlmMemory::Embeddings::Mistral.new
     #   documents_embeddings = mistral_embedding.embed_documents(["Document 1", "Document 2"])
     class Mistral
       include LlmMemory::Embedding

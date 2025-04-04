@@ -22,10 +22,18 @@ module LlmMemory
       #
       # @param messages [Array<Hash>] An array of message hashes with 'role' and 'content' keys.
       # @return [Array<Hash>] An array of messages formatted for the omniai-google API.
+      # @raise [ArgumentError] if messages is not an Array or if any message is not a Hash
+      # @raise [KeyError] if any message does not have :role or :content keys
       def format_messages_for_gemini(messages)
+        raise ArgumentError, 'messages must be an Array' unless messages.is_a?(Array)
+
         formatted_messages = []
 
         messages.each do |msg|
+          raise ArgumentError, 'each message must be a Hash' unless msg.is_a?(Hash)
+          raise KeyError, 'each message must have a :role key' unless msg.key?(:role)
+          raise KeyError, 'each message must have a :content key' unless msg.key?(:content)
+
           case msg[:role]
           when 'system'
             formatted_messages << { role: 'system', content: msg[:content] }
@@ -33,6 +41,8 @@ module LlmMemory
             formatted_messages << { role: 'user', content: msg[:content] }
           when 'assistant'
             formatted_messages << { role: 'assistant', content: msg[:content] }
+          else
+            raise ArgumentError, "invalid role: #{msg[:role]}"
           end
         end
 
@@ -42,7 +52,11 @@ module LlmMemory
       # Sends a chat request to the Gemini API using omniai-google.
       #
       # @param parameters [Hash] Parameters for the chat request.
+      # @option parameters [String] :model The model to use for the chat.
+      # @option parameters [Array<Hash>] :messages The messages to send to the chat.
+      # @option parameters [Float] :temperature (0.7) The temperature to use for the chat.
       # @return [Hash] The response from the Gemini API formatted to match OpenAI's format.
+      # @raise [StandardError] if there is an error with the Gemini API.
       def gemini_chat(parameters)
         model = parameters[:model]
         messages = format_messages_for_gemini(parameters[:messages])

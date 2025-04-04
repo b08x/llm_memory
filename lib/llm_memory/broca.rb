@@ -10,23 +10,38 @@ require_relative 'llms/mistral'
 require_relative 'llms/huggingface'
 
 module LlmMemory
-  # The Broca class is responsible for interacting with a Large Language Model (LLM),
-  # such as OpenAI's GPT models, Google's Gemini, or models via OpenRouter.
-  # It handles prompt generation, sending requests to the LLM,
-  # and managing the conversation history. It also includes functionality for adjusting
-  # the token count to stay within the model's limits and for formatting responses
-  # according to a specified schema.
+  # The Broca class is the core component for interacting with various Large Language Models (LLMs).
+  # It provides a unified interface for sending prompts, managing conversation history, and formatting responses.
+  #
+  # @example Basic usage
+  #   broca = LlmMemory::Broca.new(prompt: "You are a helpful assistant.", model: "gpt-3.5-turbo", provider: :openai)
+  #   response = broca.respond(query: "What is the capital of France?")
+  #   puts response
+  #
+  # @example Using a schema for structured output
+  #   schema = {
+  #     type: :object,
+  #     properties: {
+  #       city: { type: :string, description: "The name of the city" },
+  #       country: { type: :string, description: "The name of the country" }
+  #     },
+  #     required: [:city, :country]
+  #   }
+  #   broca = LlmMemory::Broca.new(prompt: "Extract city and country.", model: "gpt-3.5-turbo", provider: :openai)
+  #   result = broca.respond_with_schema(context: { text: "Paris is in France." }, schema: schema)
+  #   puts result
   class Broca
     attr_accessor :messages
     attr_reader :provider
 
     # Initializes a new Broca instance.
     #
-    # @param prompt [String] The base prompt to use for generating responses.
-    # @param provider [Symbol] The LLM provider to use (:openrouter, :openai, or :gemini). Defaults to :openrouter.
-    # @param model [String] The name of the LLM model to use (e.g., 'gpt-3.5-turbo', 'gemini-pro'). Defaults to 'gpt-3.5-turbo'.
-    # @param temperature [Float] Controls the randomness of the LLM's output. Higher values (e.g., 1.0) make the output more random, while lower values (e.g., 0.2) make it more focused and deterministic. Defaults to 0.7.
-    # @param max_token [Integer] The maximum number of tokens allowed in the conversation history. Defaults to 4096.
+    # @param prompt [String] The base prompt that sets the context for the LLM. This prompt is used as a template.
+    # @param provider [Symbol] The LLM provider to use. Supported providers are: `:openrouter`, `:openai`, `:gemini`, `:mistral`, `:huggingface`.
+    # @param model [String] The name of the LLM model to use (e.g., 'gpt-3.5-turbo', 'gemini-pro').
+    # @param temperature [Float] Controls the randomness of the LLM's output. Higher values (e.g., 1.0) make the output more random, while lower values (e.g., 0.2) make it more focused and deterministic.
+    # @param max_token [Integer] The maximum number of tokens allowed in the conversation history. This helps to manage the context window of the LLM.
+    # @raise [ArgumentError] if an unsupported provider is specified.
     def initialize(
       prompt:,
       model:, provider: :openrouter,
@@ -46,6 +61,7 @@ module LlmMemory
     # Includes the appropriate provider module based on the specified provider.
     #
     # @param provider [Symbol] The provider to include.
+    # @raise [ArgumentError] if an unsupported provider is specified.
     # @return [void]
     def include_provider(provider)
       case provider
@@ -66,8 +82,10 @@ module LlmMemory
 
     # Sends a request to the LLM and returns the response.
     #
-    # @param args [Hash] A hash of arguments to be used in the prompt.
+    # @param args [Hash] A hash of arguments to be used in the prompt. These arguments are merged into the base prompt template.
     # @return [String, nil] The LLM's response as a string, or nil if an error occurs.
+    # @example
+    #   broca.respond(query: "What is the meaning of life?")
     def respond(args)
       final_prompt = generate_prompt(args)
       @messages.push({ role: 'user', content: final_prompt })
@@ -95,6 +113,16 @@ module LlmMemory
     # @param context [Hash] A hash of arguments to be used in the initial prompt.
     # @param schema [Hash] A JSON schema defining the desired format of the response.
     # @return [Hash, nil] The formatted response as a hash, or nil if an error occurs or the response cannot be formatted.
+    # @example
+    #   schema = {
+    #     type: :object,
+    #     properties: {
+    #       name: { type: :string, description: "The name of the person" },
+    #       age: { type: :integer, description: "The age of the person" }
+    #     },
+    #     required: [:name, :age]
+    #   }
+    #   broca.respond_with_schema(context: { text: "John is 30 years old." }, schema: schema)
     def respond_with_schema(context: {}, schema: {})
       response_content = respond(context)
       begin
@@ -137,6 +165,8 @@ module LlmMemory
     #
     # @param args [Hash] A hash of arguments to be used in the prompt.
     # @return [String] The generated prompt.
+    # @example
+    #   broca.generate_prompt(name: "John", task: "write a poem") # => "You are a helpful assistant. Write a poem for John."
     def generate_prompt(args)
       erb = ERB.new(@prompt)
       erb.result_with_hash(args)
@@ -173,6 +203,7 @@ module LlmMemory
     #
     # @param parameters [Hash] Parameters for the chat request.
     # @return [Hash] The response from the LLM provider.
+    # @raise [RuntimeError] if an unsupported provider is specified.
     def send_chat_request(parameters)
       case @provider
       when :openrouter

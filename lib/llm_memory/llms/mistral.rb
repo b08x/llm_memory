@@ -12,6 +12,8 @@ module LlmMemory
       # It uses:
       # - api_key: taken from configuration or the MISTRAL_API_KEY environment variable.
       # - host: optional, defaults to 'https://api.mistral.ai' if not specified.
+      #
+      # @return [OmniAI::Mistral::Client] The Mistral API client.
       def client
         @client ||= OmniAI::Mistral::Client.new(
           api_key: LlmMemory.configuration.mistral_api_key || ENV['MISTRAL_API_KEY'],
@@ -19,6 +21,14 @@ module LlmMemory
         )
       end
 
+      # Sends a chat request to the Mistral API.
+      #
+      # @param parameters [Hash] Parameters for the chat request.
+      # @option parameters [String] :model The model to use for the chat.
+      # @option parameters [Array<Hash>] :messages The messages to send to the chat.
+      # @option parameters [Float] :temperature (0.7) The temperature to use for the chat.
+      # @return [Hash] The response from the Mistral API formatted to match OpenAI's format.
+      # @raise [StandardError] if there is an error with the Mistral API.
       def mistral_chat(parameters)
         model = parameters[:model] || LlmMemory.configuration.mistral_default_model
         messages = parameters[:messages]

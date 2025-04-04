@@ -5,32 +5,32 @@ module LlmMemory
   module Config
     # The Mistral class provides configuration settings for the Mistral API.
     #
-    # It allows you to set the API key, default model, and host for interacting with the Mistral API.
+    # It allows you to set the API access token, default model, and base URI for interacting with the Mistral API.
     #
     # @example
-    #   mistral_config = LlmMemory::Configuration::Mistral.new
-    #   mistral_config.api_key = "your_mistral_api_key"
+    #   mistral_config = LlmMemory::Config::Mistral.new
+    #   mistral_config.access_token = "your_mistral_api_key"
     #   mistral_config.default_model = "mistral-medium"
-    #   mistral_config.host = "https://api.mistral.ai"
+    #   mistral_config.uri_base = "https://api.mistral.ai"
     class Mistral
-      # @return [String] The Mistral API key.
-      attr_accessor :api_key
+      # @return [String] The Mistral API access token.
+      attr_accessor :access_token
       # @return [String] The default Mistral model.
       attr_accessor :default_model
-      # @return [String] The Mistral API host.
-      attr_accessor :host
+      # @return [String] The base URI for the Mistral API.
+      attr_accessor :uri_base
 
       # Initializes a new Mistral configuration instance.
       #
-      # Sets the default API key, default model, and host from environment variables.
+      # Sets the default API access token, default model, and base URI from environment variables.
       #
-      # The API key defaults to the 'MISTRAL_API_KEY' environment variable.
-      # The default model defaults to the 'MISTRAL_DEFAULT_MODEL' environment variable.
-      # The host defaults to the 'MISTRAL_HOST' environment variable or 'https://api.mistral.ai' if not set.
+      # The API access token defaults to the 'MISTRAL_API_KEY' environment variable.
+      # The default model defaults to the 'MISTRAL_DEFAULT_MODEL' environment variable or 'mistral-large' if not set.
+      # The base URI defaults to the 'MISTRAL_BASE_URI' environment variable or 'https://api.mistral.ai' if not set.
       def initialize
-        @api_key = ENV['MISTRAL_API_KEY']
+        @access_token = ENV['MISTRAL_API_KEY']
         @default_model = ENV['MISTRAL_DEFAULT_MODEL'] || 'mistral-large'
-        @host = ENV['MISTRAL_HOST'] || 'https://api.mistral.ai'
+        @uri_base = ENV['MISTRAL_BASE_URI'] || 'https://api.mistral.ai'
       end
     end
   end

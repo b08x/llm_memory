@@ -24,12 +24,25 @@ require 'llm_memory/wernicke'
 require 'llm_memory/version'
 
 module LlmMemory
+  # Generic error class for LlmMemory module.
   class Error < StandardError; end
 
   class << self
+    # @return [LlmMemory::Configuration] the current configuration.
     attr_accessor :configuration
   end
 
+  # Configures the LlmMemory module.
+  #
+  # @yield [configuration] yields the configuration object to the block.
+  # @yieldparam configuration [LlmMemory::Configuration] the configuration object.
+  #
+  # @example
+  #   LlmMemory.configure do |config|
+  #     config.api_key = 'your_api_key'
+  #   end
+  #
+  # @return [void]
   def self.configure
     self.configuration ||= Configuration.new
     yield(configuration) if block_given?

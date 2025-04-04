@@ -10,8 +10,7 @@ module LlmMemory
     module HuggingFace
       # Initializes a new HuggingFaceClient.
       #
-      # @param api_token [String] The Hugging Face API token. Defaults to the
-      #   value of the `HUGGING_FACE_API_TOKEN` environment variable.
+      # @return [HuggingFace::InferenceApi] The Hugging Face Inference API client.
       # @raise [ArgumentError] if the api_token is nil or empty.
       def client
         require 'hugging_face'
@@ -21,8 +20,12 @@ module LlmMemory
       end
 
       # Send a chat request to Hugging Face
-      # @param parameters [Hash, Array] Either a hash with :messages key or an array of messages directly
+      # @param parameters [Hash, Array, String] Either a hash with :messages key, an array of messages directly, or a string
+      # @option parameters [String] :model The model to use for the chat.
+      # @option parameters [Array<Hash>] :messages An array of message hashes with 'role' and 'content' keys.
+      # @option parameters [String] :content The content of the message.
       # @return [String] The generated text response
+      # @raise [StandardError] if there is an error with the Hugging Face API.
       def huggingface_chat(parameters)
         # Extract the input text from parameters
         input = if parameters.is_a?(Hash) && parameters[:messages].is_a?(Array)

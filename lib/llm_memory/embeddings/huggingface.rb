@@ -5,13 +5,15 @@ require_relative '../llms/huggingface'
 
 module LlmMemory
   module Embeddings
-    # The HuggingFace class provides embedding functionality using the HuggingFace API.
+    # The HuggingFace class provides embedding functionality using the Hugging Face Inference API.
     #
     # It allows you to generate embeddings for both single documents and multiple documents.
     #
-    # @example
+    # @example Embed a single document
     #   huggingface_embedding = LlmMemory::Embeddings::HuggingFace.new
     #   document_embedding = huggingface_embedding.embed_document("This is a document.")
+    # @example Embed multiple documents
+    #   huggingface_embedding = LlmMemory::Embeddings::HuggingFace.new
     #   documents_embeddings = huggingface_embedding.embed_documents(["Document 1", "Document 2"])
     class HuggingFace
       include LlmMemory::Embedding
@@ -19,10 +21,9 @@ module LlmMemory
 
       register_embedding :huggingface
 
-      # Embeds multiple documents using the HuggingFace API.
+      # Embeds multiple documents using the Hugging Face Inference API.
       #
       # @param texts [Array<String>] An array of text documents to embed.
-      # @param model [String] The model to use for embedding. Defaults to 'text-embedding-004'.
       # @return [Array<Array<Float>>] An array of embeddings, where each embedding is an array of floats.
       # @raise [StandardError] if there is an error during the embedding process.
       #
@@ -38,10 +39,9 @@ module LlmMemory
         embedding_list
       end
 
-      # Embeds a single document using the HuggingFace API.
+      # Embeds a single document using the Hugging Face Inference API.
       #
       # @param text [String] The text document to embed.
-      # @param model [String] The model to use for embedding. Defaults to 'text-embedding-004'.
       # @return [Array<Float>] The embedding of the document as an array of floats.
       # @raise [StandardError] if there is an error during the embedding process.
       #

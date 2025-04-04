@@ -5,13 +5,15 @@ require_relative '../llms/gemini'
 
 module LlmMemory
   module Embeddings
-    # The Gemini class provides embedding functionality using the Gemini API.
+    # The Gemini class provides embedding functionality using the Google Gemini API.
     #
     # It allows you to generate embeddings for both single documents and multiple documents.
     #
-    # @example
+    # @example Embed a single document
     #   gemini_embedding = LlmMemory::Embeddings::Gemini.new
     #   document_embedding = gemini_embedding.embed_document("This is a document.")
+    # @example Embed multiple documents
+    #   gemini_embedding = LlmMemory::Embeddings::Gemini.new
     #   documents_embeddings = gemini_embedding.embed_documents(["Document 1", "Document 2"])
     class Gemini
       include LlmMemory::Embedding
