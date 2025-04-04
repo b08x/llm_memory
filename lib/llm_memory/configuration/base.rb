@@ -25,7 +25,8 @@ module LlmMemory
       # Sets the PostgreSQL URL from the environment variable 'POSTGRES_URL' or nil if not set.
       # Sets the API endpoint from the environment variable 'API_ENDPOINT' or nil if not set.
       def initialize
-        @redis_url = ENV.fetch('REDIS_URL') || 'redis://localhost:6379'
+        @redis_url = ENV['REDIS_URL']
+        @ohm_url = ENV['OHM_URL']
         @pg_url = ENV['POSTGRES_URL']
         @api_endpoint = ENV['API_ENDPOINT']
       end

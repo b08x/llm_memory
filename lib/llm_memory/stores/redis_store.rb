@@ -29,7 +29,7 @@ module LlmMemory
       @content_key = content_key
       @vector_key = vector_key
       @metadata_key = metadata_key
-      @client = Redis.new(url: LlmMemory.configuration.redis_url)
+      @client = Redis.new(url: ENV.fetch('REDIS_URL'))
     end
 
     # Retrieves information about the Redis server.

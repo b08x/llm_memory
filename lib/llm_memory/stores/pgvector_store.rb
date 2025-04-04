@@ -28,7 +28,7 @@ module LlmMemoryPgvector
       @conn.exec('CREATE EXTENSION IF NOT EXISTS vector')
     end
 
-    def create_index(dim: 1536)
+    def create_index(dim: 768)
       @conn.exec("CREATE TABLE #{@index_name} (id bigserial PRIMARY KEY, #{@content_key} TEXT, #{@metadata_key} JSON, #{@vector_key} vector(#{dim}))")
     end
 

@@ -12,9 +12,10 @@ module LlmMemory
     #   gemini_config.default_model = "gemini-pro"
     class Gemini
       # @return [String] The Gemini API access token.
-      attr_accessor :access_token
+      attr_accessor :api_key
       # @return [String] The default Gemini model.
       attr_accessor :default_model
+      attr_accessor :embedding_model
 
       # Initializes a new Gemini configuration instance.
       #
@@ -23,8 +24,9 @@ module LlmMemory
       # The API access token defaults to the 'GEMINI_API_KEY' environment variable.
       # The default model defaults to the 'GEMINI_DEFAULT_MODEL' environment variable or 'gemini-2.0-flash' if not set.
       def initialize
-        @access_token = ENV.fetch('GEMINI_API_KEY')
+        @api_key = ENV.fetch('GEMINI_API_KEY')
         @default_model = ENV.fetch('GEMINI_DEFAULT_MODEL') || 'gemini-2.0-flash'
+        @embedding_model = ENV.fetch('GEMINI_EMBEDDING_MODEL') || 'text-embedding-004'
       end
     end
   end

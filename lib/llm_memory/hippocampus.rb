@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+# require 'ruby-spacy'
+# require 'tf-idf-similarity'
+# require 'bm25'
+# require 'ohm'
+# require 'ohm/contrib'
+
 require_relative 'store'
 require_relative 'stores/redis_store'
 require_relative 'stores/pgvector_store'
@@ -23,7 +29,7 @@ module LlmMemory
       embedding_name: :gemini,
       chunk_size: 1024,
       chunk_overlap: 50,
-      store: :redis,
+      store: :pgvector,
       index_name: 'llm_memory'
     )
       LlmMemory.configure

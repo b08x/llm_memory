@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    llm_memory (0.1.14)
+    llm_memory (0.2.0)
       dotenv
       google_custom_search_api
       highline
