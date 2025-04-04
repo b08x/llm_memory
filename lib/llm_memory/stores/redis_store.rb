@@ -3,11 +3,20 @@ require_relative '../store'
 require 'json'
 
 module LlmMemory
+  # The RedisStore class provides an interface for interacting with a Redis database to store and retrieve data,
+  # particularly vector embeddings and associated metadata.
   class RedisStore
     include Store
 
     register_store :redis
 
+    # Initializes a new RedisStore instance.
+    #
+    # @param index_name [String] The name of the Redis index. Defaults to 'llm_memory'.
+    # @param content_key [String] The key used to store the content. Defaults to 'content'.
+    # @param vector_key [String] The key used to store the vector embedding. Defaults to 'vector'.
+    # @param metadata_key [String] The key used to store metadata. Defaults to 'metadata'.
+    # @return [RedisStore] A new RedisStore instance.
     def initialize(
       index_name: 'llm_memory',
       content_key: 'content',
@@ -21,18 +30,31 @@ module LlmMemory
       @client = Redis.new(url: LlmMemory.configuration.redis_url)
     end
 
+    # Retrieves information about the Redis server.
+    #
+    # @return [String] The result of the Redis INFO command.
     def info
       @client.call(['INFO'])
     end
 
+    # Loads data from a CSV file.
+    #
+    # @param file_path [String] The path to the CSV file.
+    # @return [Array<Array<String>>] The data read from the CSV file.
     def load_data(file_path)
       CSV.read(file_path)
     end
 
+    # Lists all existing RedisSearch indexes.
+    #
+    # @return [Array<String>] An array of index names.
     def list_indexes
       @client.call('FT._LIST')
     end
 
+    # Checks if a RedisSearch index exists.
+    #
+    # @return [Boolean] True if the index exists, false otherwise.
     def index_exists?
       begin
         @client.call(['FT.INFO', @index_name])
@@ -42,12 +64,19 @@ module LlmMemory
       true
     end
 
+    # Drops a RedisSearch index and deletes all associated document hashes.
+    #
+    # @return [String] The result of the FT.DROPINDEX command.
     def drop_index
       # DD deletes all document hashes
       @client.call(['FT.DROPINDEX', @index_name, 'DD'])
     end
 
-    # dimention: 1536 for ada-002
+    # Creates a new RedisSearch index.
+    #
+    # @param dim [Integer] The dimension of the vector embeddings. Defaults to 1536 (for ada-002).
+    # @param distance_metric [String] The distance metric to use for vector similarity. Defaults to 'COSINE'.
+    # @return [String] The result of the FT.CREATE command.
     def create_index(dim: 1536, distance_metric: 'COSINE')
       # LangChain index
       # schema = (
@@ -74,11 +103,14 @@ module LlmMemory
       @client.call(command)
     end
 
-    # data = [{ content: "", content_vector: [], metadata: {} }]
+    # Adds data to the Redis store.
+    #
+    # @param data [Array<Hash>] An array of hashes, where each hash represents a document with 'content', 'vector', and 'metadata' keys.
+    # @return [Hash] A hash where keys are the generated Redis keys and values are the associated content.
     def add(data: [])
       result = {}
       @client.pipelined do |pipeline|
-        data.each_with_index do |d, i|
+        data.each_with_index do |d, _i|
           key = @index_name # index_name:create_time:metadata_timestamp:uuid
           timestamp = d.dig(:metadata, :timestamp)
           key += ":#{Time.now.strftime('%Y%m%d%H%M%S')}"
@@ -99,52 +131,55 @@ module LlmMemory
         end
       end
       result
-    # data.each_with_index do |d, i|
-    #   key = "#{@index_name}:#{i}"
-    #   vector_value = d[:content_vector].map(&:to_f).pack("f*")
-    #   pp vector_value
-    #   @client.hset(
-    #     key,
-    #     {
-    #       @content_key => d[:content],
-    #       @vector_key => vector_value,
-    #       @metadata_key => ""
-    #     }
-    #   )
-    # end
-    # rescue Redis::Pipeline::Error => e
-    #   # Handle the error if there is any issue with the pipeline execution
-    #   puts "Pipeline Error: #{e.message}"
-    # rescue Redis::BaseConnectionError => e
-    #   # Handle connection errors
-    #   puts "Connection Error: #{e.message}"
     rescue StandardError => e
       # Handle any other errors
       puts "Unexpected Error: #{e.message}"
     end
 
+    # Deletes a document from the Redis store.
+    #
+    # @param key [String] The key of the document to delete.
+    # @return [Integer] The number of keys that were removed.
     def delete(key)
       @client.del(key) if @client.exists?(key)
     end
 
+    # Deletes all documents in the index.
+    #
+    # @return [void]
     def delete_all
       list.keys.each do |key|
         delete(key)
       end
     end
 
+    # Retrieves a document from the Redis store.
+    #
+    # @param key [String] The key of the document to retrieve.
+    # @return [Hash] The document data as a hash.
     def get(key)
       @client.hgetall(key)
     end
 
+    # Lists keys matching a pattern in the index.
+    #
+    # @param args [Array<String>] Optional arguments to specify a pattern. If empty, lists all keys in the index.
+    # @return [Array<String>] An array of keys matching the pattern.
     def list(*args)
       pattern = "#{@index_name}:#{args.first || '*'}"
       @client.keys(pattern)
     end
 
-    def update
-    end
+    # Updates a document in the Redis store. (Not yet implemented)
+    #
+    # @return [void]
+    def update; end
 
+    # Performs a vector similarity search.
+    #
+    # @param query [Array<Float>] The query vector.
+    # @param k [Integer] The number of nearest neighbors to return. Defaults to 3.
+    # @return [Array<Hash>] An array of result hashes, each containing 'vector_score', 'content', and 'metadata'.
     def search(query: [], k: 3)
       packed_query = query.map(&:to_f).pack('f*')
       command = [

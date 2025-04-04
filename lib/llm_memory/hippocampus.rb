@@ -5,7 +5,16 @@ require_relative 'embedding'
 require_relative 'embeddings/openai'
 
 module LlmMemory
+  # The Hippocampus class is responsible for managing the memory of the LLM.
+  # It handles the chunking of documents, embedding them into vectors,
+  # and storing/retrieving them from a specified store.
   class Hippocampus
+    # @param embedding_name [Symbol] The name of the embedding to use. Defaults to :openai.
+    # @param chunk_size [Integer] The size of each chunk. Defaults to 1024.
+    # @param chunk_overlap [Integer] The overlap between chunks. Defaults to 50.
+    # @param store [Symbol] The name of the store to use. Defaults to :redis.
+    # @param index_name [String] The name of the index in the store. Defaults to 'llm_memory'.
+    # @raise [RuntimeError] if the embedding or store is not found.
     def initialize(
       embedding_name: :openai,
       chunk_size: 1024,
@@ -30,7 +39,11 @@ module LlmMemory
       @chunk_overlap = chunk_overlap
     end
 
-    # validate the document format
+    # Validates the format of the documents.
+    #
+    # @param documents [Array<Hash>] An array of documents. Each document should be a hash with :content and :metadata keys.
+    # @raise [RuntimeError] if the documents are not in the correct format.
+    # @return [void]
     def validate_documents(documents)
       is_valid = documents.all? do |hash|
         hash.is_a?(Hash) &&
@@ -42,6 +55,10 @@ module LlmMemory
       raise 'Your documents need to have an array of hashes (content: string and metadata: hash)'
     end
 
+    # Memorizes the given documents.
+    #
+    # @param docs [Array<Hash>] An array of documents to memorize.
+    # @return [void]
     def memorize(docs)
       validate_documents(docs)
       docs = make_chunks(docs)
@@ -50,27 +67,51 @@ module LlmMemory
       @store.add(data: docs)
     end
 
+    # Queries the store for documents similar to the query string.
+    #
+    # @param query_str [String] The query string.
+    # @param limit [Integer] The maximum number of results to return. Defaults to 3.
+    # @return [Array<Hash>] An array of documents that match the query.
     def query(query_str, limit: 3)
       vector = @embedding_instance.embed_document(query_str)
       @store.search(query: vector, k: limit)
     end
 
+    # Forgets all documents in the store.
+    #
+    # @return [void]
     def forget_all
       @store.drop_index if @store.index_exists?
     end
 
+    # Forgets a specific document by its key.
+    #
+    # @param key [String] The key of the document to forget.
+    # @return [void]
     def forget(key)
       @store.delete(key)
     end
 
+    # Lists all keys in the store.
+    #
+    # @param args [Array] Arguments to pass to the store's list method.
+    # @return [Array<String>] An array of keys.
     def list(*args)
       @store.list(*args)
     end
 
+    # Gets a specific document by its key.
+    #
+    # @param key [String] The key of the document to get.
+    # @return [Hash, nil] The document if found, nil otherwise.
     def get(key)
       @store.get(key)
     end
 
+    # Adds vectors to the given documents.
+    #
+    # @param docs [Array<Hash>] An array of documents.
+    # @return [Array<Hash>] An array of documents with vectors added.
     def add_vectors(docs)
       # embed documents and add vector
       result = []
@@ -87,6 +128,10 @@ module LlmMemory
       result
     end
 
+    # Chunks the given documents into smaller pieces.
+    #
+    # @param docs [Array<Hash>] An array of documents.
+    # @return [Array<Hash>] An array of chunked documents.
     def make_chunks(docs)
       result = []
       docs.each do |item|
