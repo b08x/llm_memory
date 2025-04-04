@@ -7,15 +7,14 @@ require_relative 'llms/gemini'
 
 module LlmMemory
   # The Broca class is responsible for interacting with a Large Language Model (LLM),
-  # such as OpenAI's GPT models, Google's Gemini, or models via OpenRouter. 
+  # such as OpenAI's GPT models, Google's Gemini, or models via OpenRouter.
   # It handles prompt generation, sending requests to the LLM,
   # and managing the conversation history. It also includes functionality for adjusting
   # the token count to stay within the model's limits and for formatting responses
   # according to a specified schema.
   class Broca
-    include Llms::OpenRouter
-    include Llms::Gemini
     attr_accessor :messages
+    attr_reader :provider
 
     # Initializes a new Broca instance.
     #
@@ -38,6 +37,28 @@ module LlmMemory
       @messages = []
       @temperature = temperature
       @max_token = max_token
+      include_provider(@provider)
+    end
+
+    # Includes the appropriate provider module based on the specified provider.
+    #
+    # @param provider [Symbol] The provider to include.
+    # @return [void]
+    def include_provider(provider)
+      case provider
+      when :openai
+        extend LlmMemory::Llms::Openai
+      when :openrouter
+        extend LlmMemory::Llms::OpenRouter
+      when :gemini
+        extend LlmMemory::Llms::Gemini
+      when :mistral
+        extend LlmMemory::Llms::Mistral
+      when :huggingface
+        @huggingface_client = LlmMemory::Llms::HuggingFaceClient.new
+      else
+        raise ArgumentError, "Unsupported provider: #{provider}"
+      end
     end
 
     # Sends a request to the LLM and returns the response.
@@ -74,7 +95,7 @@ module LlmMemory
     def respond_with_schema(context: {}, schema: {})
       response_content = respond(context)
       begin
-        # Note: Function calling is primarily supported by OpenAI models
+        # NOTE: Function calling is primarily supported by OpenAI models
         # For Gemini, we would need to adapt this approach or use a different method
         response = send_chat_request(
           model: schema_model_for_provider,
