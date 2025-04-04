@@ -1,5 +1,6 @@
 require_relative 'store'
 require_relative 'stores/redis_store'
+require_relative 'stores/pgvector_store'
 
 require_relative 'embedding'
 require_relative 'embeddings/openai'

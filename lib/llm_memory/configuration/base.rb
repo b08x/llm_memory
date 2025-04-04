@@ -11,6 +11,7 @@ module LlmMemory
     #   base_config = LlmMemory::Configuration::Base.new
     #   base_config.api_endpoint = "http://localhost:3000/api"
     class Base
+      attr_accessor :pg_url, :redis_url
       # @return [String] The API endpoint.
       attr_accessor :api_endpoint
 
@@ -19,6 +20,8 @@ module LlmMemory
       # Sets the default Redis URL from the environment variable 'REDISCLOUD_URL' or 'redis://localhost:6379' if not set.
       # Sets the API endpoint from the environment variable 'API_ENDPOINT'.
       def initialize
+        @redis_url = ENV.fetch('REDIS_URL') || 'redis://localhost:6379'
+        @pg_url = ENV.fetch('POSTGRES_URL')
         @api_endpoint = ENV['API_ENDPOINT']
       end
     end

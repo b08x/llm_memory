@@ -38,6 +38,8 @@ module LlmMemory
     #   @deprecated Use {Configuration::Base#redis_url} instead.
     attr_accessor :openai_access_token, :openai_organization_id
 
+    attr_writer :pg_url
+
     # Initializes a new Configuration instance.
     #
     # Sets up the default configuration for each LLM provider.
@@ -52,10 +54,19 @@ module LlmMemory
       # For backward compatibility
       @openai_api_key = @openai.access_token
       @openai_organization_id = @openai.organization_id
-      # @redis_url = @base.redis_url
+
+      @redis_url = @base.redis_url
+      @pg_url = @base.pg_url
     end
 
     # @!group Backward Compatibility Methods
+
+    def pg_url
+      return @pg_url if @pg_url
+
+      error_text = 'Missing Connection URIs See https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING'
+      raise ConfigurationError, error_text
+    end
 
     # @return [String] The Gemini API key.
     # @deprecated Use {Configuration::Gemini#api_key} instead.

@@ -30,7 +30,7 @@ module LlmMemory
       #     include LlmMemory::Store
       #     register_store :my_store
       #   end
-      def register_store(name, _klass)
+      def register_store(name)
         LlmMemory::StoreManager.register_store(name, self)
       end
     end
