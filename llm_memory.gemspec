@@ -29,15 +29,6 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'pry-stack_explorer'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'rubocop-minitest'
-  spec.add_development_dependency 'rubocop-packaging'
-  spec.add_development_dependency 'rubocop-performance'
-  spec.add_development_dependency 'rubocop-rake'
-  spec.add_development_dependency 'ruby-lsp'
-  spec.add_development_dependency 'solargraph'
-
   spec.add_dependency 'bm25', '~> 0.1.9'
   spec.add_dependency 'dotenv'
   spec.add_dependency 'google_custom_search_api'

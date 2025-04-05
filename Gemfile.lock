@@ -389,6 +389,7 @@ GEM
     sqlite3 (1.7.3-arm64-darwin)
     sqlite3 (1.7.3-x86_64-darwin)
     sqlite3 (1.7.3-x86_64-linux)
+    srt (0.1.5)
     stal (0.3.0)
       redic (~> 1.5)
     standard (1.35.0.1)
@@ -465,6 +466,7 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    webvtt (0.0.3)
     wisper (2.0.1)
     wordnet (1.2.0)
       loggability (~> 0.18)
@@ -494,6 +496,7 @@ DEPENDENCIES
   llm_memory!
   llm_memory_pgvector (~> 0.1.5)
   pry-stack_explorer
+  rspec (~> 3.10)
   rubocop
   rubocop-minitest
   rubocop-packaging
@@ -501,6 +504,8 @@ DEPENDENCIES
   rubocop-rake
   ruby-lsp
   solargraph
+  srt (~> 0.1.5)
+  webvtt (~> 0.0.3)
 
 BUNDLED WITH
    2.6.5
