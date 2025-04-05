@@ -16,7 +16,7 @@ module LlmMemory
     # Supported file types and their extensions
     FILE_TYPES = {
       text: %w[.txt .md .markdown .org],
-      structured_text: %w[.json .jsonl .csv],
+      # structured_text: %w[.json .jsonl .csv],
       document: %w[.pdf]
       # document: %w[.pdf .doc .docx .rtf],
       # audio: %w[.mp3 .wav .ogg .flac .opus .m4a .aiff],
