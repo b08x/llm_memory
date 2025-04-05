@@ -3,6 +3,7 @@
 require 'digest'
 require 'mime/types/columnar'
 require 'pathname'
+require 'mimemagic'
 
 module LlmMemory
   # The FileObject class handles gathering and validating file attributes, and determining

@@ -17,6 +17,7 @@ rescue StandardError => e
 end
 
 # config
+require 'llm_memory/parser'
 require 'llm_memory/configuration'
 require 'llm_memory/hippocampus'
 require 'llm_memory/broca'
