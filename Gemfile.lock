@@ -24,6 +24,7 @@ PATH
       puma
       pycall
       rake (~> 13.0)
+      redcarpet
       redis
       redis-namespace
       rspec (~> 3.0)
@@ -42,6 +43,7 @@ PATH
       treetop
       tty-box
       tty-markdown
+      tty-progressbar
       tty-prompt
       tty-screen
       tty-spinner
@@ -260,6 +262,7 @@ GEM
       ffi (~> 1.0)
     rbs (3.9.2)
       logger
+    redcarpet (3.6.1)
     redic (1.5.3)
       hiredis
     redis (5.4.0)
@@ -435,6 +438,11 @@ GEM
       strings (~> 0.2.0)
       tty-color (~> 0.5)
       tty-screen (~> 0.8)
+    tty-progressbar (0.18.3)
+      strings-ansi (~> 0.2)
+      tty-cursor (~> 0.7)
+      tty-screen (~> 0.8)
+      unicode-display_width (>= 1.6, < 3.0)
     tty-prompt (0.23.1)
       pastel (~> 0.8)
       tty-reader (~> 0.8)
