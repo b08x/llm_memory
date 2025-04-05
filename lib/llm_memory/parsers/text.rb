@@ -5,7 +5,7 @@ require_relative 'base'
 require 'yaml'
 
 module LlmMemory
-  module Parsers
+  module Parser
     class Text < Base
       def parse
         content = read_file
@@ -27,7 +27,7 @@ module LlmMemory
       end
     end
 
-    class Markdown < Base
+    class MD < Base
       FRONT_MATTER_PATTERN = /\A---\n(.*?)\n---\n(.*)\z/m
 
       def parse

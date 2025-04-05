@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module LlmMemory
-  module Parsers
+  module Parser
     class Base
       attr_reader :file_object
 

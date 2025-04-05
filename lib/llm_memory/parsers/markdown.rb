@@ -48,10 +48,8 @@ module LlmMemory
       # @param text [String] The markdown text to process
       # @return [Hash] Hash containing :content and :metadata
       def process(text)
-        grammar_processor = LlmMemory::TreetopGrammar.new('markdown_yaml')
-        parse_result = grammar_processor.parse(text)
-
-        if parse_result
+        parse_result = GRAMMAR_PROCESSOR.parse(text)
+        if parse_result && parse_result[:yaml_front_matter]
           metadata = extract_metadata(parse_result[:yaml_front_matter])
           {
             content: parse_result[:markdown_content],
@@ -88,7 +86,7 @@ module LlmMemory
 
         YAML.safe_load(yaml_front_matter)
       rescue StandardError => e
-        { yaml_error: e.message }
+        { yaml_error: e.message.to_s }
       end
 
       # Checks if this parser can handle the given file
