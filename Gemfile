@@ -1,19 +1,154 @@
 # frozen_string_literal: true
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 # Specify your gem's dependencies in llm_memory.gemspec
 gemspec
 
-gem "rake", "~> 13.0"
-gem "rspec", "~> 3.0"
-gem "standard", "~> 1.3"
-gem "vcr", "~> 6.1.0"
-gem "webmock", "~> 3.18.1"
-gem "ruby-openai"
-gem "tokenizers"
-gem "redis"
-gem "llm_memory_pgvector"
-# dev
-gem "dotenv"
-gem "pry"
+# gem "rake", "~> 13.0"
+# gem "rspec", "~> 3.0"
+
+# gem "ruby-openai"
+# gem "tokenizers"
+# gem "redis"
+# gem "llm_memory_pgvector"
+# # dev
+# gem "dotenv"
+# gem "pry"
+
+group :development, :test do
+  gem 'rdoc'
+  gem 'rspec', '~> 3.10'
+  gem 'rubocop', require: false
+  gem 'rubocop-minitest'
+  gem 'rubocop-packaging'
+  gem 'rubocop-performance'
+  gem 'rubocop-rake'
+  gem 'rubocop-rspec'
+  gem 'rubocop-sequel'
+  gem 'rubocop-shopify'
+  gem 'rubocop-thread_safety'
+  gem 'ruby-lsp'
+  gem 'solargraph'
+  gem 'standard'
+  gem 'vcr'
+  gem 'webmock'
+  gem 'yard'
+end
+
+gem 'agent-context'
+gem 'algorithms'
+gem 'amazing_print'
+gem 'async'
+gem 'async-cable'
+gem 'async-http'
+gem 'async-job'
+gem 'async-job-processor-redis'
+gem 'async-service'
+gem 'bm25f'
+gem 'circuit_breaker'
+gem 'clipboard'
+gem 'colorize'
+gem 'cucumber-ruby'
+gem 'curses'
+gem 'daru'
+gem 'daru-view'
+gem 'decode'
+gem 'dotenv'
+gem 'dry-configurable'
+gem 'dry-container'
+gem 'drydock'
+gem 'erb'
+gem 'falcon'
+gem 'fiddle'
+gem 'front_matter_parser'
+gem 'fuzzy_tools'
+gem 'gemoji'
+gem 'git'
+gem 'google-apis-customsearch_v1'
+gem 'google_custom_search_api'
+gem 'google_search_results'
+gem 'hashie'
+gem 'highline'
+gem 'hugging-face'
+gem 'informers'
+gem 'jongleur'
+gem 'jsonl'
+gem 'langchainrb'
+gem 'lingua'
+gem 'linguistics'
+gem 'linkparser'
+gem 'mimemagic'
+gem 'mime-types'
+gem 'mutex'
+gem 'mutex_m'
+gem 'neighbor'
+gem 'nokogiri'
+gem 'numpy'
+gem 'ohm'
+gem 'ohm-contrib'
+gem 'oj'
+gem 'open4'
+gem 'os'
+gem 'parallel'
+gem 'pastel'
+gem 'pdf-reader'
+gem 'pg'
+gem 'pgvector'
+gem 'polyglot'
+gem 'poppler'
+gem 'pragmatic_segmenter'
+gem 'pragmatic_tokenizer'
+gem 'pry'
+gem 'pry-bond'
+gem 'pry-doc'
+gem 'pycall'
+gem 'rake'
+gem 'ratelimit'
+gem 'rbs'
+gem 'redcarpet'
+gem 'redic'
+gem 'redis'
+gem 'redis-client'
+gem 'ruby_llm'
+gem 'ruby_llm-mcp'
+gem 'ruby_llm-schema'
+gem 'ruby-spacy'
+gem 'rubyzip'
+gem 'rwordnet'
+gem 'sass'
+gem 'sequel'
+gem 'sequel_pg'
+gem 'slim'
+gem 'sprockets'
+gem 'srt'
+gem 'terrapin'
+gem 'tf-idf-similarity'
+gem 'timeout'
+gem 'tokenizers'
+gem 'tty-box'
+gem 'tty-command'
+gem 'tty-config'
+gem 'tty-cursor'
+gem 'tty-editor'
+gem 'tty-exit'
+gem 'tty-file'
+gem 'tty-font'
+gem 'tty-link'
+gem 'tty-logger'
+gem 'tty-markdown'
+gem 'tty-option'
+gem 'tty-pager'
+gem 'tty-progressbar'
+gem 'tty-prompt'
+gem 'tty-reader'
+gem 'tty-screen'
+gem 'tty-spinner'
+gem 'tty-table'
+gem 'tty-tree'
+gem 'tty-which'
+gem 'webvtt'
+gem 'wordnet'
+gem 'wordnet-defaultdb'
+gem 'yajl-ruby', require: 'yajl'
+gem 'yaml'
